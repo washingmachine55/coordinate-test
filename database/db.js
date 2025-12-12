@@ -1,5 +1,6 @@
-const mariadb = require('mariadb');
-const pool = mariadb.createPool({
+import { createPool } from 'mariadb';
+
+const pool = createPool({
     host: 'localhost',
     port: 3306,
     user: 'coordinate_tester',
@@ -7,7 +8,5 @@ const pool = mariadb.createPool({
     database: 'geo_news',
     connectionLimit: 5 // Adjust as needed
 });
-
-module.exports = pool;
-
-// console.log("Connection pool created.");
+const db = await pool.getConnection()
+export default db;

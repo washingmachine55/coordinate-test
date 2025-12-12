@@ -1,14 +1,14 @@
-const pool = require("./db")
-const process = require('node:process');
+import { getConnection } from "./db";
+import { abort } from 'node:process';
 
 async function createRecord(lat1,lon1,lat2,lon2,distance,decision) {
-    const conn = await pool.getConnection()
+    const conn = await getConnection()
     try {
         const result = await conn.execute(
             "INSERT INTO entries (start_lat, start_long, end_lat, end_long, distance_km, decision) VALUES (?, ?, ?, ?, ?, ?)",
             [lat1,lon1,lat2,lon2,distance,decision]
         )
-        return console.log(`Record Added to Database: ${result.insertId}`) + process.abort();
+        return console.log(`Record Added to Database: ${result.insertId}`) + abort();
     } catch (err) {
         console.error("Error creating record:", err)
     } finally {
@@ -16,4 +16,5 @@ async function createRecord(lat1,lon1,lat2,lon2,distance,decision) {
     }
 }
 
-exports.createRecord = createRecord
+const _createRecord = createRecord;
+export { _createRecord as createRecord };

@@ -13,3 +13,24 @@
 	- sucess: bollean
 	- message: string
 	- data: array from the database columns
+
+## Extra Debugging tips to add in main for running processes:
+### Simple
+```
+	setTimeout(() => {
+		console.log('Active handles:', process._getActiveHandles().map(h => h.constructor.name));
+		console.log('Active requests:', process._getActiveRequests().map(r => r.constructor.name));
+	}, 50);
+```
+### Detailed
+```
+	setTimeout(() => {
+		const handles = process._getActiveHandles();
+		console.log('Active handles count:', handles.length);
+		handles.forEach((h, i) => {
+			console.log(i, h.constructor.name);
+			try { console.log(Object.keys(h).filter(k => typeof h[k] !== 'function').slice(0, 8).reduce((acc, k) => { acc[k] = h[k]; return acc }, {}, {})); }
+			catch (e) { console.log('inspect failed', e.message); }
+		});
+	}, 50);
+```

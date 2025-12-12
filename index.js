@@ -1,7 +1,7 @@
-const readline = require("node:readline");
-const createAndSave = require("./createAndSave")
+import { createInterface } from "node:readline";
+import db from "./database/db.js";
 
-const rl = readline.createInterface({ 
+const rl = createInterface({ 
 	input: process.stdin,
 	output: process.stdout,
 });
@@ -86,8 +86,7 @@ function calcDistance(startAnswer,endAnswer)
 }
 
 // Converts numeric degrees to radians
-function toRad(Value) 
-{
+function toRad(Value) {
 	return Value * Math.PI / 180;
 }
 
@@ -113,7 +112,7 @@ function distAndDecision(distance) {
 	return showDistance(distance) + console.log(decision(distance));
 }
 
-function saveToDB() 
+async function saveToDB()
 {	
 	var lat1 = startAnswer[0];
 	var lon1 = startAnswer[1];
@@ -130,15 +129,23 @@ function saveToDB()
 	Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
 	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
 	var d = R * c;
-	
-	return createAndSave.createRecord(startAnswer[0],startAnswer[1],endAnswer[0],endAnswer[1],parseInt(d),decision(d));
+
+	const recordToAdd = [startAnswer[0], startAnswer[1], endAnswer[0], endAnswer[1], parseInt(d), decision(d)];
+
+	// await test1(recordToAdd);
+	// return addRecord(startAnswer[0], startAnswer[1], endAnswer[0], endAnswer[1], parseInt(d), decision(d));
+	await fetch('http://localhost:3000/coordinates/add', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(recordToAdd)
+	});
 }
 
 async function main() {	
 	await q1()
 	await q2()
 	distAndDecision(calcDistance(startAnswer,endAnswer))
-	saveToDB();
+	await saveToDB();
 	rl.close()
 }
 
