@@ -3,14 +3,14 @@
 - Fixed the bug at 8:54AM like a sane human being
 
 ## Haversine implementation (COMPLETED)
-- ~~Next task (self-assigned) is to use haversine formula to calcualte the distance between the two latitudes and longitudes~~ (COMPLETED)
+- ~~Next task (self-assigned) is to use haversine formula to calculate the distance between the two latitudes and longitudes~~ (COMPLETED)
 	- ~~[Haversine Formula - Wikipedia](https://en.wikipedia.org/wiki/Haversine_formula)~~
 
 ## Next Task - API using Express.js and Node.js
 - nodejs server
 - 1 api using express js
 - json
-	- sucess: bollean
+	- success: boolean
 	- message: string
 	- data: array from the database columns
 
@@ -33,4 +33,12 @@
 			catch (e) { console.log('inspect failed', e.message); }
 		});
 	}, 50);
+```
+
+## Testing API through curl example
+```
+curl --request POST \
+      --header "Content-Type: application/json" \
+      --data '[{start_lat:3,start_long:2,end_lat:6,end_long:8,distance_km:23,decision:"Invalid"}]' \
+      http://localhost:3000/coordinates/add
 ```
