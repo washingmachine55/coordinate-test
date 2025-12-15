@@ -1,4 +1,5 @@
 import mariadb from "mariadb";
+import mongoose from "mongoose";
 
 const pool = mariadb.createPool({
 	host: 'localhost',

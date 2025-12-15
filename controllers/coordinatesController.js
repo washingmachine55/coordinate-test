@@ -1,6 +1,6 @@
 // import entries from "../database/schema.js";
 
-import pool from "../config/dbMariadb.js";
+import pool from "../config/db.js";
 
 // async function readAllRecords(_req, res) {
 //   try {
