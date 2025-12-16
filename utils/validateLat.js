@@ -1,4 +1,4 @@
-const coordinates = /(90|[0-8]?\d)(\.\d+)?\s*,/gi;
+const coordinates = /^-?([1-8]?\d(\.\d+)?|90(\.0+)?)$/
 
 export function validateLat(answer) {
 	var coordinatesValidationRegex = structuredClone(coordinates);

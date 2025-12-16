@@ -1,7 +1,8 @@
 // import entries from "../database/schema.js";
 import pool from "../config/db.js";
-import validateCoordinates from "../validations/coordinatesValidator.js";
+import validateCoordinates from "../utils/validateCoordinates.js";
 import addCoordinateEntryToDataBase from '../services/coordinatesDatabaseService.js';
+import { calcDistance, giveDecision, splitCoordinates } from "../utils/index.js";
 
 // async function readAllRecords(_req, res) {
 //   try {
@@ -38,7 +39,7 @@ import addCoordinateEntryToDataBase from '../services/coordinatesDatabaseService
 
 
 async function readAllRecords(_req, res) {
-  // let pool;
+  let conn;
   try {
     const conn = await pool.getConnection();
     const result = await conn.query("SELECT * FROM entries");
@@ -50,43 +51,38 @@ async function readAllRecords(_req, res) {
   } catch (err) {
     console.error("Error reading records:", err)
   } finally {
-    // if (conn) conn.end();
+    if (conn) conn.end();
   }
 }
 
 async function addRecord(req, res) {
-  // let conn;
   try {
-    // conn = await pool.getConnection();
-
     let request = Object.values(req.body)
 
-    const validatedEntryStart = validateCoordinates(request[0])
-    const validatedEntryEnd = validateCoordinates(request[1])
-    // console.log(validateCoordinates(request[1]));
+    const startLat = splitCoordinates(request[0])[0];
+    const startLong = splitCoordinates(request[0])[1];
+    const endLat = splitCoordinates(request[1])[0];
+    const endLong = splitCoordinates(request[1])[1];
 
-    console.log(`Validated Entry: ${validatedEntryStart}`)
-    console.log(`Validated Entry: ${validatedEntryEnd}`)
+    if (((validateCoordinates(startLat, startLong)) === true) && ((validateCoordinates(endLat, endLong)) === true)) {
+      const calculatedDistance = calcDistance(startLat, startLong, endLat, endLong)
+      const givenDecision = giveDecision(calculatedDistance)
 
-    // try {
-    //   const uploadToDB = addCoordinateEntryToDataBase(validatedEntry);
-    //   console.log(uploadToDB);
+      const entryArray = [startLat, startLong, endLat, endLong, calculatedDistance, givenDecision]
 
-    // } catch (error) {
-    //   console.error(error);
-    // }
-
-
-    // const entryArray = Object.values(req.body[0])
-    // const entry = [entryArray[0], entryArray[1], entryArray[2], entryArray[3], entryArray[4], entryArray[5]]
-    // const saveToDB = conn.query("INSERT INTO entries(start_lat,start_long,end_lat,end_long,distance_km,decision) VALUES (?, ?, ?, ?, ?, ?)", entry);
-    // await saveToDB;
-    res.format({
-      json() {
-        // res.send({ message: 'Record Added!', record_id: `${saveToDB.id}` })
-        // res.send({ message: 'Record Added!', entry: `${validatedEntry}` })
+      try {
+        await addCoordinateEntryToDataBase(entryArray);
+        res.format({
+          json() {
+            res.send({ message: 'Record Added!', entry: `${entryArray}` })
+          }
+        })
+      } catch (error) {
+        console.error(error);
       }
-    })
+    } else {
+      console.log("cant work on calculation as values are in an incorrect format");
+    }
   } catch (err) {
     console.error("Error creating record:", err)
   }
