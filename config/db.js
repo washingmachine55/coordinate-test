@@ -1,9 +1,12 @@
 import mariadb from "mariadb";
-import { env } from 'node:process';
+import { env, loadEnvFile } from 'node:process';
 
-const uri = env.DB_URI
+loadEnvFile();
 
-if (env.DB_PROVIDER == "mariadb") {
+const uri = env.DB_URI;
+// let pool;
+
+// if (process.env.DB_PROVIDER == "mariadb") {
 	const pool = mariadb.createPool({
 		host: env.DB_HOST,
 		user: env.DB_USER,
@@ -12,53 +15,50 @@ if (env.DB_PROVIDER == "mariadb") {
 		database: env.DB_NAME,
 		connectionLimit: 5
 	});
-} 
+// }
 
-else if (env.DB_PROVIDER == "mongodb") {
+// if (env.DB_PROVIDER == "mongodb") {
+// 	pool = new MongoClient(uri, {
+// 		serverApi: {
+// 			version: ServerApiVersion.v1,
+// 			strict: true,
+// 			deprecationErrors: true,
+// 		}
+// 	});
 
-	const clientDB = new MongoClient(uri, {
-		serverApi: {
-			version: ServerApiVersion.v1,
-			strict: true,
-			deprecationErrors: true,
-		}
-	});
+// 	async function run() {
+// 		try {
+// 			await pool.connect();
+// 			await pool.db(env.DB_NAME).command({ ping: 1 });
+// 			console.log("Pinged your deployment. You successfully connected to MongoDB!");
+// 		} finally {
+// 			await pool.close();
+// 		}
+// 	}
+// 	run().catch(console.dir);
+// }
 
-	async function run() {
-		try {
-			await clientDB.connect();
-			await clientDB.db(env.DB_NAME).command({ ping: 1 });
-			console.log("Pinged your deployment. You successfully connected to MongoDB!");
-		} finally {
-			await clientDB.close();
-		}
-	}
-	run().catch(console.dir);
+// else if (env.DB_PROVIDER == "mongoose") {
 
+// 	async function pool() {
+// 		console.log("Pinged your deployment. You successfully connected to Mongoose!");
+// 		await mongoose.connect(uri, {
+// 			dbName: env.DB_NAME
+// 		});
 
-}
+// 		mongoose.connection.on('connected', () => console.log('connected'));
+// 		mongoose.connection.on('open', () => console.log('open'));
+// 		mongoose.connection.on('disconnected', () => console.log('disconnected'));
+// 		mongoose.connection.on('reconnected', () => console.log('reconnected'));
+// 		mongoose.connection.on('disconnecting', () => console.log('disconnecting'));
+// 		mongoose.connection.on('close', () => console.log('close'));
+// 	}
 
-else if (env.DB_PROVIDER == "mongoose") {
+// 	// const conn = mongoose.createConnection(uri);
+// }
 
-	async function pool() {
-		console.log("Pinged your deployment. You successfully connected to Mongoose!");
-		await mongoose.connect(uri, {
-			dbName: env.DB_NAME
-		});
-
-		mongoose.connection.on('connected', () => console.log('connected'));
-		mongoose.connection.on('open', () => console.log('open'));
-		mongoose.connection.on('disconnected', () => console.log('disconnected'));
-		mongoose.connection.on('reconnected', () => console.log('reconnected'));
-		mongoose.connection.on('disconnecting', () => console.log('disconnecting'));
-		mongoose.connection.on('close', () => console.log('close'));
-	}
-
-	// const conn = mongoose.createConnection(uri);
-} 
-
-else {
-	console.log("Please enter a DB in your .env")
-}
+// else {
+// 	console.log("Please enter a DB in your .env")
+// }
 
 export default pool;

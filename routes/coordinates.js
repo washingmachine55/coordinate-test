@@ -2,7 +2,7 @@ import express from 'express';
 import {
 	readAllRecords,
 	addRecord
-} from '../controllers/coordinates.js';
+} from '../controllers/coordinatesController.js';
 const router = express.Router();
 
 router.get('/all', readAllRecords)

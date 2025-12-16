@@ -1,31 +1,49 @@
-import { splitCoordinates } from "../utils/splitCoordinates.js";
+import { validateLat, validateLong, splitCoordinates } from "../utils/index.js";
 
 const coordinates = /^-?(90|[0-8]?\d)(\.\d+)?, *-?(180|1[0-7]\d|\d?\d)(\.\d+)?$/gi;
 
-let startAnswer = [];
-let endAnswer = [];
+let answerArray = [];
 
-function validateCoordinates(startReq, endReq) {
-	var startCoordinates = structuredClone(coordinates);
-	try {
-		if ((startCoordinates.test(startReq)) === false) {
-			console.error("Not a valid entry for start");
+export default function validateCoordinates(answer) {
+
+	answerArray = Object.assign(answerArray, splitCoordinates(answer))
+	var coordinatesValidationRegex = structuredClone(coordinates);
+
+	// console.log(coordinatesValidationRegex);
+
+	console.log(coordinatesValidationRegex.test((validateLat(answerArray[0]))));
+
+
+	if ((validateLat(answerArray[0] == coordinatesValidationRegex)) || (validateLong(answerArray[1] == coordinatesValidationRegex))) {
+		if (validateLat(answerArray[0] == coordinatesValidationRegex)) {
+			return false;
+			// return console.log("Invalid Latitude Entry");
+		} else if (validateLong(answerArray[1] == coordinatesValidationRegex)) {
+			return false;
+	// return console.log("Invalid Longitude Entry");
 		} else {
-			startAnswer = Object.assign(startAnswer, splitCoordinates(answer))
-			return resolve(startAnswer)
+			return true
+			// return console.log("Invalid Latitude or Longitude Entry");
 		}
-	} catch (error) {
-		console.error(console.error());
-	} finally {
-		return startAnswer;
+	} else {
+		return true;
 	}
 
-	if (endReq !== undefined) {
+	let formattedAnswer = answer
+	// console.log(formattedAnswer);
 
-		try {
-			
-		} catch (error) {
-			
-		}
-	}
+
+	// var coordinatesValidationRegex = structuredClone(coordinates);
+	// try {
+	// 	if ((coordinatesValidationRegex.test(formattedAnswer)) === false) {
+	// 		console.error("Not a valid entry. Please try again.");
+	// 	} else {
+	// 		// answerArray = Object.assign(answerArray, splitCoordinates(answer))
+	// 		return resolve(JSON.stringify(formattedAnswer))
+	// 	}
+	// } catch (error) {
+	// 	console.error(console.error());
+	// } finally {
+	// 	return (JSON.stringify(formattedAnswer));
+	// }
 }
