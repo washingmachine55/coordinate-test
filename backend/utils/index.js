@@ -1,4 +1,4 @@
-export { splitCoordinates } from '../utils/splitCoordinates.js';
+export { splitCoordinates } from './splitCoordinates.js';
 export * from './validateLat.js';
 export * from './validateLong.js';
 export * from './validateCoordinates.js';

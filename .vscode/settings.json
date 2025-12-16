@@ -1,0 +1,6 @@
+{
+	"prettier.requireConfig": true,
+	"prettier.configPath": "../frontend/.prettierrc.js",
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+}
