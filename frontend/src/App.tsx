@@ -1,14 +1,16 @@
 import './App.css';
-import EntriesTableWrapper from '@/components/entries-table-wrapper';
-import { EntryDialog } from './components/entry-dialog';
+import { EntryDialog } from './entries/entry-dialog';
+import { DataTable } from './entries/data-table';
+import { Toaster } from '@/components/ui/sonner';
 
 function App() {
 	return (
 		<>
-			<div className="mb-4">
+			<Toaster />
+			<div className="mb-4 justify-items-end">
 				<EntryDialog />
 			</div>
-			<EntriesTableWrapper />
+			<DataTable />
 		</>
 	);
 }

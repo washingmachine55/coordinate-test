@@ -12,7 +12,14 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import axios from 'axios';
+import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
+
+// type Inputs = {
+// 	startPosition: string;
+// 	endPosition: string;
+// };
 
 export function EntryDialog() {
 	const [startPosition, setStartPosition] = useState('');
@@ -41,7 +48,10 @@ export function EntryDialog() {
 		<Dialog>
 			<form id="entry-form" onSubmit={submitData}>
 				<DialogTrigger asChild>
-					<Button variant="default">Add New</Button>
+					<Button variant="default">
+						<PlusIcon />
+						Add New
+					</Button>
 				</DialogTrigger>
 				<DialogContent className="sm:max-w-106.25">
 					<DialogHeader>
@@ -78,6 +88,7 @@ export function EntryDialog() {
 						<DialogClose asChild>
 							<Button variant="outline">Cancel</Button>
 						</DialogClose>
+						<Button onClick={() => toast.success('Event has been created')} ></Button>
 						<Button type="submit" value="submit" onClick={() => submitData()}>
 							Save changes
 						</Button>

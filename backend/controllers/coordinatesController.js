@@ -83,7 +83,12 @@ async function addRecord(req, res) {
         console.error(error);
       }
     } else {
-      console.log("cant work on calculation as values are in an incorrect format");
+      // console.log("cant work on calculation as values are in an incorrect format");
+      res.format({
+        json() {
+          res.send({ message: 'Can\'t work on calculation as values are in an incorrect format!' })
+        }
+      })
     }
   } catch (err) {
     console.error("Error creating record:", err)
