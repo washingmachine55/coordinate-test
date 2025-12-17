@@ -6,7 +6,9 @@
 	"scripts": {
 		"dev-server": "nodemon server.js",
 		"dev-debug": "DEBUG=coordinate-test:* nodemon server.js",
-		"test": "node --watch server.js --env-file=.env"
+		"test": "node --watch server.js --env-file=.env",
+		"format": "prettier --write .",
+		"format:check": "prettier --check ."
 	},
 	"keywords": [],
 	"author": "",

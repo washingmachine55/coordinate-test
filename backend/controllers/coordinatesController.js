@@ -39,9 +39,11 @@ import { calcDistance, giveDecision, splitCoordinates } from "../utils/index.js"
 
 
 async function readAllRecords(_req, res) {
-  let conn;
+  // let conn;
+  const conn = await pool.getConnection();
+
   try {
-    const conn = await pool.getConnection();
+  // const conn = await pool.getConnection();
     const result = await conn.query("SELECT * FROM entries");
     await res.format({
       json() {
@@ -51,7 +53,7 @@ async function readAllRecords(_req, res) {
   } catch (err) {
     console.error("Error reading records:", err)
   } finally {
-    if (conn) conn.end();
+    conn.end();
   }
 }
 
