@@ -7,14 +7,14 @@ import {
 	getPaginationRowModel,
 	useReactTable 
 	} from '@tanstack/react-table';
-import { 
-	Table, 
-	TableBody, 
-	TableCell, 
-	// TableFooter, 
-	TableHead, 
-	TableHeader, 
-	TableRow 
+import {
+	Table,
+	TableBody,
+	TableCell,
+	// TableFooter,
+	TableHead,
+	TableHeader,
+	TableRow,
 } from '@/components/ui/table';
 import axios from 'axios';
 import { 
