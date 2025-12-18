@@ -84,7 +84,7 @@ const columns = [
 	}),
 ];
 
-export function DataTable() {
+export function EntriesDataTable() {
 	const url = 'http://localhost:3000/coordinates/all';
 
 	useEffect(() => {
@@ -102,36 +102,37 @@ export function DataTable() {
 	});
 
 	return (
-		<div className="p-2 overflow-hidden bg-gray-200 rounded-3xl">
-			<Table>
-				<TableHeader className="testing">
-					{table.getHeaderGroups().map((headerGroup) => (
-						<TableRow key={headerGroup.id} className="">
-							{headerGroup.headers.map((header) => (
-								<TableHead
-									key={header.id}
-									className="text-center text-xl font-bold rounded-2xl bg-gray-300"
-								>
-									{header.isPlaceholder
-										? null
-										: flexRender(header.column.columnDef.header, header.getContext())}
-								</TableHead>
-							))}
-						</TableRow>
-					))}
-				</TableHeader>
-				<TableBody>
-					{table.getRowModel().rows.map((row) => (
-						<TableRow key={row.id}>
-							{row.getVisibleCells().map((cell) => (
-								<TableCell key={cell.id} className="text-base">
-									{flexRender(cell.column.columnDef.cell, cell.getContext())}
-								</TableCell>
-							))}
-						</TableRow>
-					))}
-				</TableBody>
-				{/* <TableFooter>
+		<>
+			<div className="p-2 overflow-hidden bg-gray-200 rounded-3xl">
+				<Table>
+					<TableHeader className="testing">
+						{table.getHeaderGroups().map((headerGroup) => (
+							<TableRow key={headerGroup.id} className="">
+								{headerGroup.headers.map((header) => (
+									<TableHead
+										key={header.id}
+										className="text-center text-xl font-bold rounded-2xl bg-gray-300"
+									>
+										{header.isPlaceholder
+											? null
+											: flexRender(header.column.columnDef.header, header.getContext())}
+									</TableHead>
+								))}
+							</TableRow>
+						))}
+					</TableHeader>
+					<TableBody className="last:border-2">
+						{table.getRowModel().rows.map((row) => (
+							<TableRow key={row.id}>
+								{row.getVisibleCells().map((cell) => (
+									<TableCell key={cell.id} className="text-base">
+										{flexRender(cell.column.columnDef.cell, cell.getContext())}
+									</TableCell>
+								))}
+							</TableRow>
+						))}
+					</TableBody>
+					{/* <TableFooter>
 					{table.getFooterGroups().map((footerGroup) => (
 						<TableRow key={footerGroup.id}>
 							{footerGroup.headers.map((header) => (
@@ -149,23 +150,23 @@ export function DataTable() {
 						</TableRow>
 					))}
 				</TableFooter> */}
-			</Table>
-			<div className="h-4" />
-			<div>
-				<div className="flex items-center justify-end space-x-2 py-4">
-					<Button variant={'outline'} onClick={() => table.firstPage()}>
-						1
-					</Button>
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => table.previousPage()}
-						disabled={!table.getCanPreviousPage()}
-					>
-						<ChevronLeftIcon />
-						Previous
-					</Button>
-					{/* <Select>
+				</Table>
+				<div className="h-4" />
+				<div>
+					<div className="flex items-center justify-end space-x-2 py-4">
+						<Button variant={'outline'} onClick={() => table.firstPage()}>
+							1
+						</Button>
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={() => table.previousPage()}
+							disabled={!table.getCanPreviousPage()}
+						>
+							<ChevronLeftIcon />
+							Previous
+						</Button>
+						{/* <Select>
 						<SelectTrigger className="w-20">
 							<SelectValue placeholder={table.getPageCount()} />
 						</SelectTrigger>
@@ -181,23 +182,44 @@ export function DataTable() {
 							</SelectGroup>
 						</SelectContent>
 					</Select> */}
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => table.nextPage()}
-						disabled={!table.getCanNextPage()}
-					>
-						Next
-						<ChevronRightIcon />
-					</Button>
-					<Button variant={'outline'} onClick={() => table.lastPage()}>
-						{table.getPageCount()}
-					</Button>
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={() => table.nextPage()}
+							disabled={!table.getCanNextPage()}
+						>
+							Next
+							<ChevronRightIcon />
+						</Button>
+						<Button variant={'outline'} onClick={() => table.lastPage()}>
+							{table.getPageCount()}
+						</Button>
+					</div>
 				</div>
-			</div>
-			{/* <Button onClick={() => rerender()} className="border p-2" variant="secondary">
+				{/* <Button onClick={() => rerender()} className="border p-2" variant="secondary">
 				Rerender
 			</Button> */}
-		</div>
+			</div>
+			<div>
+				<Table>
+					<TableHeader>
+						<TableRow>
+							<TableHead className="w-[100px]">Invoice</TableHead>
+							<TableHead>Status</TableHead>
+							<TableHead>Method</TableHead>
+							<TableHead className="text-right">Amount</TableHead>
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						<TableRow>
+							<TableCell className="font-medium">Test 1</TableCell>
+							<TableCell>Test 2</TableCell>
+							<TableCell>Test 3</TableCell>
+							<TableCell className="text-right">Test 4</TableCell>
+						</TableRow>
+					</TableBody>
+				</Table>
+			</div>
+		</>
 	);
 }

@@ -16,31 +16,41 @@ import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-// type Inputs = {
-// 	startPosition: string;
-// 	endPosition: string;
-// };
-
 export function EntryDialog() {
 	const [startPosition, setStartPosition] = useState('');
 	const [endPosition, setEndPosition] = useState('');
+	const [responseMsg, setResponseMsg] = useState('');
+	const [responseType, setResponseType] = useState('');
 
 	async function submitData() {
 		try {
-			await axios.post(
-				'http://localhost:3000/coordinates/add',
-				{
-					start_position: startPosition,
-					end_position: endPosition,
-				},
-				{
-					headers: {
-						'Content-Type': 'application/json',
+			await axios
+				.post(
+					'http://localhost:3000/coordinates/add',
+					{
+						start_position: startPosition,
+						end_position: endPosition,
 					},
-				}
-			);
+					{
+						headers: {
+							'Content-Type': 'application/json',
+						},
+					}
+				)
+				.then(
+					(responseMsg) => (setResponseMsg(responseMsg.data.message), setResponseType(responseMsg.data.type))
+				);
 		} catch (error) {
 			console.log(error);
+			toast.error('Something went wrong :/');
+		} finally {
+			if (responseType == 'success') {
+				toast.success(responseMsg);
+			} else if (responseType == 'error') {
+				toast.error(responseMsg);
+			} else {
+				toast.info('Something went wrong, please try again later.');
+			}
 		}
 	}
 
@@ -57,7 +67,8 @@ export function EntryDialog() {
 					<DialogHeader>
 						<DialogTitle>Add new entry</DialogTitle>
 						<DialogDescription>
-							Make changes to your profile here. Click save when you&apos;re done.
+							Enter your coordinates in the input fields below. The coordinates need to be in a format of
+							vaild [latitude,longitude] numerical values with optional decimal points.
 						</DialogDescription>
 					</DialogHeader>
 					<div className="grid gap-4">
@@ -88,7 +99,6 @@ export function EntryDialog() {
 						<DialogClose asChild>
 							<Button variant="outline">Cancel</Button>
 						</DialogClose>
-						<Button onClick={() => toast.success('Event has been created')} ></Button>
 						<Button type="submit" value="submit" onClick={() => submitData()}>
 							Save changes
 						</Button>

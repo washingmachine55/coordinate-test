@@ -76,7 +76,11 @@ async function addRecord(req, res) {
         await addCoordinateEntryToDataBase(entryArray);
         res.format({
           json() {
-            res.send({ message: 'Record Added!', entry: `${entryArray}` })
+            res.send({
+              type: 'success',
+              message: 'Record Added!',
+              entry: `${entryArray}`
+            })
           }
         })
       } catch (error) {
@@ -86,7 +90,10 @@ async function addRecord(req, res) {
       // console.log("cant work on calculation as values are in an incorrect format");
       res.format({
         json() {
-          res.send({ message: 'Can\'t work on calculation as values are in an incorrect format!' })
+          res.send({
+            type: 'error',
+            message: 'Can\'t work on calculation as values are in an incorrect format!'
+          })
         }
       })
     }
