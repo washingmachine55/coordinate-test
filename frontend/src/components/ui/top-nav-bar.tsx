@@ -59,9 +59,8 @@ const components: { title: string; href: string; description: string }[] = [
 ];
 
 export function TopNavBar() {
-
 	return (
-		<NavigationMenu className='w-full flow-root'>
+		<NavigationMenu className="w-full flow-root">
 			<NavigationMenuList className="float-start">
 				<NavigationMenuItem>
 					<NavigationMenuTrigger>Home</NavigationMenuTrigger>
@@ -138,7 +137,7 @@ export function TopNavBar() {
 				</NavigationMenuItem>
 			</NavigationMenuList>
 			<NavigationMenuList className="float-end">
-				<NavigationMenuItem className='justify-end'>
+				<NavigationMenuItem className="justify-end">
 					<NavigationMenuTrigger>Account</NavigationMenuTrigger>
 					<NavigationMenuContent>
 						<ul className="grid w-50 gap-4">

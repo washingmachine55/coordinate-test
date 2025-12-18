@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 
-import { 
-	createColumnHelper, 
-	flexRender, 
+import {
+	createColumnHelper,
+	flexRender,
 	getCoreRowModel,
 	getPaginationRowModel,
-	useReactTable 
-	} from '@tanstack/react-table';
+	useReactTable,
+} from '@tanstack/react-table';
 import {
 	Table,
 	TableBody,
@@ -17,10 +17,10 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import axios from 'axios';
-import { 
-	ChevronLeftIcon, 
-	ChevronRightIcon, 
-	// MoreHorizontalIcon 
+import {
+	ChevronLeftIcon,
+	ChevronRightIcon,
+	// MoreHorizontalIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 // import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -38,11 +38,11 @@ type Entry = {
 const preferredData: Entry[] = [
 	{
 		id: 1,
-		start_lat: "string",
-		start_long: "string",
-		end_lat: "string",
-		end_long: "string",
-		decision: "string",
+		start_lat: 'string',
+		start_long: 'string',
+		end_lat: 'string',
+		end_long: 'string',
+		decision: 'string',
 		distance_km: 29,
 	},
 ];

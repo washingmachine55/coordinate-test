@@ -1,3 +1,4 @@
+import compression from 'compression';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -6,6 +7,7 @@ const port = 3000;
 
 import coordinateRoutes from "./routes/coordinates.js";
 
+app.use(compression())
 app.use(bodyParser.json());
 app.use(express.json());
 // app.use(cors());

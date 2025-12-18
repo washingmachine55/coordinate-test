@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev-server": "nodemon server.js",
 		"dev-debug": "DEBUG=coordinate-test:* nodemon server.js",
-		"test": "node --watch server.js --env-file=.env",
+		"test": "node --watch server.js --env-file=.env -trace-sync-io",
 		"format": "prettier --write .",
 		"format:check": "prettier --check ."
 	},
@@ -15,6 +15,7 @@
 	"license": "ISC",
 	"type": "module",
 	"dependencies": {
+		"compression": "^1.8.1",
 		"cors": "^2.8.5",
 		"express": "^5.2.1",
 		"mariadb": "^3.4.5",
