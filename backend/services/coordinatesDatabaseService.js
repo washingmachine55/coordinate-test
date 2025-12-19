@@ -1,6 +1,6 @@
 import pool from "../config/db.js";
 
-export default async function addCoordinateEntryToDataBase(request) {
+export default async function addCoordinateEntryToDatabase(request) {
 	// let conn;
 	const conn = await pool.getConnection();
 

@@ -5,3 +5,4 @@ export * from './validateCoordinates.js';
 export * from './toRad.js';
 export * from './giveDecision.js';
 export * from './calcDistance.js';
+export * from './confirmPassword.js';

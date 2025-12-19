@@ -1,7 +1,7 @@
 // import entries from "../database/schema.js";
 import pool from "../config/db.js";
 import validateCoordinates from "../utils/validateCoordinates.js";
-import addCoordinateEntryToDataBase from '../services/coordinatesDatabaseService.js';
+import addCoordinateEntryToDatabase from '../services/coordinatesDatabaseService.js';
 import { calcDistance, giveDecision, splitCoordinates } from "../utils/index.js";
 
 // async function readAllRecords(_req, res) {
@@ -73,7 +73,7 @@ async function addRecord(req, res) {
       const entryArray = [startLat, startLong, endLat, endLong, calculatedDistance, givenDecision]
 
       try {
-        await addCoordinateEntryToDataBase(entryArray);
+        await addCoordinateEntryToDatabase(entryArray);
         res.format({
           json() {
             res.send({

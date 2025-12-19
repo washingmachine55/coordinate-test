@@ -42,7 +42,6 @@ export function EntryDialog() {
 				);
 		} catch (error) {
 			console.log(error);
-			toast.error('Something went wrong :/');
 		} finally {
 			if (responseType == 'success') {
 				toast.success(responseMsg);
@@ -56,7 +55,7 @@ export function EntryDialog() {
 
 	return (
 		<Dialog>
-			<form id="entry-form" onSubmit={submitData}>
+			<form onSubmit={submitData}>
 				<DialogTrigger asChild>
 					<Button variant="default">
 						<PlusIcon />

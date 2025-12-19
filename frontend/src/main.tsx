@@ -7,6 +7,7 @@ import App from './App.tsx';
 import Register from './components/features/auth/register.tsx';
 import Guest from './pages/guest.tsx';
 import Login from './components/features/auth/login.tsx';
+import { Toaster } from './components/ui/sonner.tsx';
 
 const router = createBrowserRouter([
 	{
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
 	<StrictMode>
+		<Toaster position="top-center" />
 		<RouterProvider router={router} />
 		{/* <App /> */}
 	</StrictMode>

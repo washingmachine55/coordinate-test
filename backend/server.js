@@ -6,6 +6,7 @@ const app = express();
 const port = 3000;
 
 import coordinateRoutes from "./routes/coordinates.js";
+import authRoutes from "./routes/auth.js";
 
 app.use(compression())
 app.use(bodyParser.json());
@@ -17,6 +18,7 @@ app.use(cors({
 }));
 
 app.use("/coordinates", coordinateRoutes);
+app.use("/auth", authRoutes);
 
 app.listen(port, () => {
 	console.log(`CORS-enabled web server listening on port ${port}`)
