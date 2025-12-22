@@ -85,10 +85,19 @@ const columns = [
 ];
 
 export function EntriesDataTable() {
+	// axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
 	const url = 'http://localhost:3000/coordinates/all';
 
 	useEffect(() => {
-		axios.get(url).then((Response) => setData(Response.data));
+		axios
+			.get(url, {
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: localStorage.getItem('token'),
+				},
+			})
+			.then((Response) => setData(Response.data));
 	}, []);
 
 	const [data, setData] = React.useState(() => [...preferredData]);
@@ -204,7 +213,7 @@ export function EntriesDataTable() {
 				<Table>
 					<TableHeader>
 						<TableRow>
-							<TableHead className="w-[100px]">Invoice</TableHead>
+							<TableHead className="w-25">Invoice</TableHead>
 							<TableHead>Status</TableHead>
 							<TableHead>Method</TableHead>
 							<TableHead className="text-right">Amount</TableHead>

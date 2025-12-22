@@ -42,3 +42,9 @@ curl --request POST \
       --data '[{start_lat:3,start_long:2,end_lat:6,end_long:8,distance_km:23,decision:"Invalid"}]' \
       http://localhost:3000/coordinates/add
 ```
+
+## ENV help
+### Creating a JWT Secret Key (run in console)
+```
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'));"
+```

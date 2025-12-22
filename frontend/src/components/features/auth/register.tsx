@@ -13,47 +13,35 @@ export default function Register() {
 	const [userEmail, setUserEmail] = useState('');
 	const [userPassword, setUserPassword] = useState('');
 	const [confirmedPassword, setConfirmedPassword] = useState('');
-	const [responseMsg, setResponseMsg] = useState('');
-	const [responseType, setResponseType] = useState('');
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		// async function submitData() {
 		try {
-			await axios
-				.post(
-					'http://localhost:3000/auth/register',
-					{
-						name: userName,
-						email: userEmail,
-						password: userPassword,
-						confirmed_password: confirmedPassword,
+			const axiosReqRes = await axios.post(
+				'http://localhost:3000/auth/register',
+				{
+					name: userName,
+					email: userEmail,
+					password: userPassword,
+					confirmed_password: confirmedPassword,
+				},
+				{
+					headers: {
+						'Content-Type': 'application/json',
 					},
-					{
-						headers: {
-							'Content-Type': 'application/json',
-						},
-					}
-				)
-				.then(
-					(responseMsg) => (setResponseMsg(responseMsg.data.message), setResponseType(responseMsg.data.type))
-				)
-				.catch(function (error) {
-					console.log(error);
-				});
-		} catch (error) {
-			console.log(error);
-		} finally {
-			if (responseType == 'success') {
-				toast.success(responseMsg);
-			} else if (responseType == 'error') {
-				toast.error(responseMsg);
+				}
+			);
+			if (axiosReqRes.data.type == 'success') {
+				toast.success(axiosReqRes.data.message);
+			} else if (axiosReqRes.data.type == 'error') {
+				toast.error(axiosReqRes.data.message);
 			} else {
 				toast.info('Something went wrong, please try again later.');
 			}
+		} catch (error) {
+			console.log(error);
 		}
-		// }
 	};
 
 	return (

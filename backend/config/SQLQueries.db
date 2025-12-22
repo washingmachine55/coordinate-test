@@ -1,0 +1,22 @@
+-- Creating users table
+-- CREATE TABLE IF NOT EXISTS geo_news.users (
+-- 	id int auto_increment PRIMARY KEY,
+-- 	name VARCHAR(255) NOT NULL,
+-- 	email VARCHAR(255) NOT NULL,
+-- 	password varchar(255) NOT NULL,
+-- 	created_at timestamp NOT NULL DEFAULT current_timestamp
+-- )
+
+-- Adding new timestamp column to 'entries' table
+-- ALTER TABLE geo_news.entries ADD COLUMN created_at timestamp NOT NULL DEFAULT current_timestamp()
+
+-- Adding new user_id column to entries table for FK
+-- ALTER TABLE geo_news.entries ADD COLUMN user_id int DEFAULT NULL AFTER id;
+
+-- Adding unique key constraint
+-- ALTER TABLE geo_news.users ADD CONSTRAINT users_unique UNIQUE KEY (email);
+
+-- Adding FK constraint for user_id in entries table
+-- ALTER TABLE geo_news.entries ADD CONSTRAINT entries_users_FK FOREIGN KEY (user_id) REFERENCES geo_news.users(id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+

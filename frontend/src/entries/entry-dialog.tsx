@@ -34,6 +34,7 @@ export function EntryDialog() {
 					{
 						headers: {
 							'Content-Type': 'application/json',
+							Authorization: localStorage.getItem('token'),
 						},
 					}
 				)

@@ -1,8 +1,11 @@
 import pool from "../config/db.js";
-import { isCredentialsMatching } from "../services/authenicateUserDatabaseService.js";
+import { getUserId, isCredentialsMatching } from "../services/authenicateUserDatabaseService.js";
 import checkExistingEmail from "../services/checkExistingEmailDatabaseService.js";
 import registerUserToDatabase from "../services/registerDatabaseService.js";
 import { confirmPassword } from "../utils/index.js";
+
+import jwt from 'jsonwebtoken';
+const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY
 
 async function registerUser(req, res) {
 	let request = Object.values(req.body)
@@ -86,12 +89,15 @@ async function loginUser(req, res) {
 			// --------------------------------------------------------------------------- //
 			let credentialMatchingResult = await isCredentialsMatching(userEmail, userPassword)
 			if ((credentialMatchingResult) == true) {
+				let userId = await getUserId(userEmail, userPassword);
+				const token = jwt.sign({ id: userId }, JWT_SECRET_KEY, { expiresIn: '1h' });
+
 				return await res.format({
 					json() {
-						res.send({
+						res.send([{
 							type: 'success',
 							message: 'Sign in successful!'
-						})
+						}, { token }])
 					}
 				})
 			} else {

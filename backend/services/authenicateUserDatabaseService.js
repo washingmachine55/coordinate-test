@@ -24,3 +24,19 @@ export async function isCredentialsMatching(userEmail, userPassword) {
 		conn.end()
 	}
 }
+
+export async function getUserId(userEmail, userPassword) {
+	const conn = await pool.getConnection();
+
+	try {
+		const credentialsCheck = await conn.query("SELECT id FROM geo_news.users WHERE email = ? AND password = ?;", [userEmail, userPassword]);
+
+		let result = Object.values(credentialsCheck[0]).toString()
+
+		return result;
+	} catch (err) {
+		console.error("Error creating record:", err)
+	} finally {
+		conn.end()
+	}
+}

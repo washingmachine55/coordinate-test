@@ -8,6 +8,7 @@ import TextLink from '@/components/ui/text-link';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { useState } from 'react';
+import { Navigate, useNavigate } from 'react-router';
 
 interface LoginProps {
 	status?: string;
@@ -17,11 +18,12 @@ interface LoginProps {
 export default function Login({ status, canRegister }: LoginProps) {
 	const [userEmail, setUserEmail] = useState('');
 	const [userPassword, setUserPassword] = useState('');
+	const navigate = useNavigate();
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		try {
-			const responseMsg = await axios.post(
+			const axiosReqRes = await axios.post(
 				'http://localhost:3000/auth/login',
 				{
 					email: userEmail,
@@ -33,10 +35,15 @@ export default function Login({ status, canRegister }: LoginProps) {
 					},
 				}
 			);
-			if (responseMsg.data.type == 'success') {
-				toast.success(responseMsg.data.message);
-			} else if (responseMsg.data.type == 'error') {
-				toast.error(responseMsg.data.message);
+			localStorage.setItem('token', axiosReqRes.data[1].token);
+
+			if (axiosReqRes.data[0].type == 'success') {
+				toast.success(axiosReqRes.data[0].message);
+				setTimeout(() => {
+					navigate('/', { replace: true });
+				}, 500);
+			} else if (axiosReqRes.data[0].type == 'error') {
+				toast.error(axiosReqRes.data[0].message);
 			} else {
 				toast.info('Something went wrong, please try again later.');
 			}
