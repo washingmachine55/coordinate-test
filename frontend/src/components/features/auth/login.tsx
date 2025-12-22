@@ -8,7 +8,7 @@ import TextLink from '@/components/ui/text-link';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { useState } from 'react';
-import { Navigate, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 
 interface LoginProps {
 	status?: string;
@@ -35,9 +35,10 @@ export default function Login({ status, canRegister }: LoginProps) {
 					},
 				}
 			);
-			localStorage.setItem('token', axiosReqRes.data[1].token);
+			console.log(axiosReqRes.data);
 
 			if (axiosReqRes.data[0].type == 'success') {
+				localStorage.setItem('token', axiosReqRes.data[1].token);
 				toast.success(axiosReqRes.data[0].message);
 				setTimeout(() => {
 					navigate('/', { replace: true });

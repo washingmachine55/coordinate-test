@@ -2,17 +2,17 @@
 - Went home around 6:20AM and initialized repo at 7AM
 - Fixed the bug at 8:54AM like a sane human being
 
-## Haversine implementation (COMPLETED)
+## ~~Haversine implementation~~ (COMPLETED)
 - ~~Next task (self-assigned) is to use haversine formula to calculate the distance between the two latitudes and longitudes~~ (COMPLETED)
 	- ~~[Haversine Formula - Wikipedia](https://en.wikipedia.org/wiki/Haversine_formula)~~
 
-## Next Task - API using Express.js and Node.js
-- nodejs server
-- 1 api using express js
-- json
-	- success: boolean
-	- message: string
-	- data: array from the database columns
+## ~~Next Task - API using Express.js and Node.js~~ (COMPLETED)
+~~- nodejs server~~
+~~- 1 api using express js~~
+~~- json~~
+	~~- success: boolean~~
+	~~- message: string~~
+	~~- data: array from the database columns~~
 
 ## Extra Debugging tips to add in main for running processes:
 ### Simple
@@ -48,3 +48,6 @@ curl --request POST \
 ```
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'));"
 ```
+
+## Next Step [24th December]
+- Implement email verification through [Nodemailer](https://nodemailer.com/) and [Ethereal email service](https://ethereal.email/)

@@ -1,7 +1,6 @@
 // 'use client';
 
 import * as React from 'react';
-import { CircleCheckIcon, CircleHelpIcon, CircleIcon } from 'lucide-react';
 
 import {
 	NavigationMenu,
@@ -12,6 +11,16 @@ import {
 	NavigationMenuTrigger,
 	navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
+import Logout from '../features/auth/logout';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from './dropdown-menu';
+import { Button } from './button';
 
 const components: { title: string; href: string; description: string }[] = [
 	{
@@ -108,62 +117,20 @@ export function TopNavBar() {
 						<a href="/docs">Docs</a>
 					</NavigationMenuLink>
 				</NavigationMenuItem>
-				<NavigationMenuItem className="hidden md:block">
-					<NavigationMenuTrigger>Account</NavigationMenuTrigger>
-					<NavigationMenuContent>
-						<ul className="grid w-[200px] gap-4">
-							<li>
-								<NavigationMenuLink asChild>
-									<a href="#" className="flex-row items-center gap-2">
-										<CircleHelpIcon />
-										Backlog
-									</a>
-								</NavigationMenuLink>
-								<NavigationMenuLink asChild>
-									<a href="#" className="flex-row items-center gap-2">
-										<CircleIcon />
-										To Do
-									</a>
-								</NavigationMenuLink>
-								<NavigationMenuLink asChild>
-									<a href="#" className="flex-row items-center gap-2">
-										<CircleCheckIcon />
-										Done
-									</a>
-								</NavigationMenuLink>
-							</li>
-						</ul>
-					</NavigationMenuContent>
-				</NavigationMenuItem>
 			</NavigationMenuList>
-			<NavigationMenuList className="float-end">
-				<NavigationMenuItem className="justify-end">
-					<NavigationMenuTrigger>Account</NavigationMenuTrigger>
-					<NavigationMenuContent>
-						<ul className="grid w-50 gap-4">
-							<li>
-								<NavigationMenuLink asChild>
-									<a href="#" className="flex-row items-center gap-2">
-										<CircleHelpIcon />
-										Backlog
-									</a>
-								</NavigationMenuLink>
-								<NavigationMenuLink asChild>
-									<a href="#" className="flex-row items-center gap-2">
-										<CircleIcon />
-										To Do
-									</a>
-								</NavigationMenuLink>
-								<NavigationMenuLink asChild>
-									<a href="#" className="flex-row items-center gap-2">
-										<CircleCheckIcon />
-										Done
-									</a>
-								</NavigationMenuLink>
-							</li>
-						</ul>
-					</NavigationMenuContent>
-				</NavigationMenuItem>
+			<NavigationMenuList className="float-end justify-end">
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button>Account</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent>
+						<DropdownMenuLabel>Account Options</DropdownMenuLabel>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem>
+							<Logout />
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			</NavigationMenuList>
 		</NavigationMenu>
 	);

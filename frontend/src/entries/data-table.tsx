@@ -27,6 +27,8 @@ import { Button } from '@/components/ui/button';
 
 type Entry = {
 	id: number;
+	// user_id: number;
+	name: string;
 	start_lat: string;
 	start_long: string;
 	end_lat: string;
@@ -38,6 +40,8 @@ type Entry = {
 const preferredData: Entry[] = [
 	{
 		id: 1,
+		// user_id: 2,
+		name: 'Tester',
 		start_lat: 'string',
 		start_long: 'string',
 		end_lat: 'string',
@@ -54,6 +58,9 @@ const columns = [
 		header: () => <span>ID</span>,
 		// cell: (info) => info.getValue(),
 		// footer: (info) => info.column.id,
+	}),
+	columnHelper.accessor('name', {
+		header: () => <span>User's Name</span>,
 	}),
 	columnHelper.accessor((row) => row.start_lat, {
 		id: 'start_lat',

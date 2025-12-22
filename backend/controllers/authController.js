@@ -1,5 +1,6 @@
 import pool from "../config/db.js";
-import { getUserId, isCredentialsMatching } from "../services/authenicateUserDatabaseService.js";
+import verifyToken from "../middlewares/verifyToken.js";
+import { getUserId, isCredentialsMatching } from "../services/authenticateUserDatabaseService.js";
 import checkExistingEmail from "../services/checkExistingEmailDatabaseService.js";
 import registerUserToDatabase from "../services/registerDatabaseService.js";
 import { confirmPassword } from "../utils/index.js";
@@ -51,12 +52,15 @@ async function registerUser(req, res) {
 	const entryArray = [userName, userEmail, userPassword]
 	try {
 		await registerUserToDatabase(entryArray);
+		let userId = await getUserId(userEmail, userPassword);
+		const token = jwt.sign({ id: userId }, JWT_SECRET_KEY, { expiresIn: '1h' });
+
 		res.format({
 			json() {
-				res.send({
+				res.send([{
 					type: 'success',
 					message: 'Registered Successfully!',
-				})
+				}, { token }])
 			}
 		})
 	} catch (error) {
@@ -74,13 +78,15 @@ async function loginUser(req, res) {
 		// Check if email doesn't exist in database already
 		// --------------------------------------------------------------------------- //
 		let existingEmailCheck = await checkExistingEmail(userEmail)
+		console.log(existingEmailCheck);
+
 		if ((existingEmailCheck) == true) {
 			return await res.format({
 				json() {
-					res.send({
+					res.send([{
 						type: 'error',
 						message: 'Email doesn\'t exist. Please sign up instead.'
-					})
+					}, { 'Token': 'Invalid Token' }])
 				}
 			})
 		} else if ((existingEmailCheck) == false) {
@@ -103,10 +109,10 @@ async function loginUser(req, res) {
 			} else {
 				return await res.format({
 					json() {
-						res.send({
+						res.send([{
 							type: 'error',
 							message: 'Credentials Don\'t match. Please try again.'
-						})
+						}, { 'Token': 'Invalid Token' }])
 					}
 				})
 			}
@@ -116,7 +122,42 @@ async function loginUser(req, res) {
 	}
 }
 
+async function logoutUser(req, res) {
+	const token = req.header('authorization');
+	try {
+		const decoded = jwt.verify(token, JWT_SECRET_KEY);
+		// const userId = decoded.id;
+		res.status(200).json({
+			type: 'success',
+			message: 'Logged out successfully'
+		});
+		// next();
+	} catch (err) {
+		res.status(401).json({ msg: 'Token is not valid' });
+	}
+}
+
+async function verifyUserToken(req, res) {
+	const token = req.header('Authorization');
+
+	if (!token) return res.status(401).send('Access Denied');
+
+	try {
+		const verified = jwt.verify(token, JWT_SECRET_KEY);
+		const userId = verified.id;
+		res.status(200).json([{
+			type: 'success',
+			message: 'Verified Token'
+		}, { user_id: userId }, { Authorization: token }]);
+
+	} catch (err) {
+		res.status(400).send('Invalid Token. Please login.');
+	}
+}
+
 export {
 	registerUser,
-	loginUser
+	loginUser,
+	logoutUser,
+	verifyUserToken
 };

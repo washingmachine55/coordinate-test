@@ -7,7 +7,7 @@ export default async function addCoordinateEntryToDatabase(request) {
 	try {
 		// conn = await pool.getConnection();
 
-		const saveToDB = await conn.query("INSERT INTO entries(start_lat,start_long,end_lat,end_long,distance_km,decision) VALUES (?, ?, ?, ?, ?, ?)", request);
+		const saveToDB = await conn.query("INSERT INTO entries(user_id,start_lat,start_long,end_lat,end_long,distance_km,decision) VALUES (?, ?, ?, ?, ?, ?, ?)", request);
 		await saveToDB;
 
 	} catch (err) {

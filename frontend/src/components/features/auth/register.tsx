@@ -7,12 +7,14 @@ import InputError from '@/components/ui/input-error';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 
 export default function Register() {
 	const [userName, setUserName] = useState('');
 	const [userEmail, setUserEmail] = useState('');
 	const [userPassword, setUserPassword] = useState('');
 	const [confirmedPassword, setConfirmedPassword] = useState('');
+	const navigate = useNavigate();
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -32,10 +34,14 @@ export default function Register() {
 					},
 				}
 			);
-			if (axiosReqRes.data.type == 'success') {
-				toast.success(axiosReqRes.data.message);
-			} else if (axiosReqRes.data.type == 'error') {
-				toast.error(axiosReqRes.data.message);
+			if (axiosReqRes.data[0].type == 'success') {
+				localStorage.setItem('token', axiosReqRes.data[1].token);
+				toast.success(axiosReqRes.data[0].message);
+				setTimeout(() => {
+					navigate('/', { replace: true });
+				}, 500);
+			} else if (axiosReqRes.data[0].type == 'error') {
+				toast.error(axiosReqRes.data[0].message);
 			} else {
 				toast.info('Something went wrong, please try again later.');
 			}

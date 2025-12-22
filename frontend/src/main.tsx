@@ -8,17 +8,25 @@ import Register from './components/features/auth/register.tsx';
 import Guest from './pages/guest.tsx';
 import Login from './components/features/auth/login.tsx';
 import { Toaster } from './components/ui/sonner.tsx';
+import ProtectedRoute from './lib/protected-route.tsx';
 
 const router = createBrowserRouter([
 	{
 		path: '/',
-		// element: <div>Hello World</div>,
 		element: <App />,
 	},
 	{
 		path: '/guest',
-		element: <Guest />,
+		element: (
+			<ProtectedRoute>
+				<Guest />
+			</ProtectedRoute>
+		),
 	},
+	// {
+	// 	path: '/guest',
+	// 	element: <Guest />,
+	// },
 	{
 		path: '/register',
 		element: <Register />,
@@ -33,6 +41,6 @@ createRoot(document.getElementById('root')!).render(
 	<StrictMode>
 		<Toaster position="top-center" />
 		<RouterProvider router={router} />
-		{/* <App /> */}
+		<App />
 	</StrictMode>
 );

@@ -2,7 +2,7 @@
 import pool from "../config/db.js";
 import validateCoordinates from "../utils/validateCoordinates.js";
 import addCoordinateEntryToDatabase from '../services/coordinatesDatabaseService.js';
-import { calcDistance, giveDecision, splitCoordinates } from "../utils/index.js";
+import { calcDistance, giveDecision, splitCoordinates, verifyUserToken } from "../utils/index.js";
 
 // async function readAllRecords(_req, res) {
 //   try {
@@ -44,7 +44,8 @@ async function readAllRecords(_req, res) {
 
   try {
   // const conn = await pool.getConnection();
-    const result = await conn.query("SELECT * FROM entries");
+    // const result = await conn.query("SELECT * FROM entries");
+    const result = await conn.query("SELECT e.*, u.name FROM geo_news.entries e LEFT JOIN geo_news.users u ON e.user_id = u.id ");
     await res.format({
       json() {
         res.send(result)
@@ -59,6 +60,8 @@ async function readAllRecords(_req, res) {
 
 async function addRecord(req, res) {
   try {
+    let userId = verifyUserToken(req)
+
     let request = Object.values(req.body)
 
     const startLat = splitCoordinates(request[0])[0];
@@ -70,7 +73,7 @@ async function addRecord(req, res) {
       const calculatedDistance = calcDistance(startLat, startLong, endLat, endLong)
       const givenDecision = giveDecision(calculatedDistance)
 
-      const entryArray = [startLat, startLong, endLat, endLong, calculatedDistance, givenDecision]
+      const entryArray = [userId, startLat, startLong, endLat, endLong, calculatedDistance, givenDecision]
 
       try {
         await addCoordinateEntryToDatabase(entryArray);
