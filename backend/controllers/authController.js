@@ -1,4 +1,5 @@
 import pool from '../config/db.js';
+import sendVerificationEmail from '../mail/verifyEmailAddress.js';
 import verifyToken from '../middlewares/verifyToken.js';
 import { getUserId, isCredentialsMatching } from '../services/authenticateUserDatabaseService.js';
 import checkExistingEmail from '../services/checkExistingEmailDatabaseService.js';
@@ -53,8 +54,11 @@ async function registerUser(req, res) {
 	try {
 		await registerUserToDatabase(entryArray);
 		let userId = await getUserId(userEmail, userPassword);
-		const token = jwt.sign({ id: userId }, JWT_SECRET_KEY, { expiresIn: '1h' });
 
+		let emailSent = await sendVerificationEmail(userId);
+		console.debug(emailSent);
+
+		const token = jwt.sign({ id: userId }, JWT_SECRET_KEY, { expiresIn: '1h' });
 		res.format({
 			json() {
 				res.send([
