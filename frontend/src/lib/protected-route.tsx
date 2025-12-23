@@ -21,7 +21,7 @@ export default function ProtectedRoute({ children }: { children: ReactNode }): R
 
 	if (!localStorage.getItem('token')) {
 		// return <div onLoad={() => navigate(`/login`)}></div>;
-		return <Navigate to='/login'/>
+		return <Navigate to="/login" />;
 	} else {
 		return <div>{children}</div>;
 	}

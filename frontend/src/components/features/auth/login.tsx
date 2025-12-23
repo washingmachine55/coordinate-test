@@ -35,7 +35,6 @@ export default function Login({ status, canRegister }: LoginProps) {
 					},
 				}
 			);
-			console.log(axiosReqRes.data);
 
 			if (axiosReqRes.data[0].type == 'success') {
 				localStorage.setItem('token', axiosReqRes.data[1].token);

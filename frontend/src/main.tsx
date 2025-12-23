@@ -9,24 +9,13 @@ import Guest from './pages/guest.tsx';
 import Login from './components/features/auth/login.tsx';
 import { Toaster } from './components/ui/sonner.tsx';
 import ProtectedRoute from './lib/protected-route.tsx';
+import Error404 from './pages/error-404.tsx';
 
 const router = createBrowserRouter([
 	{
-		path: '/',
-		element: <App />,
-	},
-	{
 		path: '/guest',
-		element: (
-			<ProtectedRoute>
-				<Guest />
-			</ProtectedRoute>
-		),
+		element: <Guest />,
 	},
-	// {
-	// 	path: '/guest',
-	// 	element: <Guest />,
-	// },
 	{
 		path: '/register',
 		element: <Register />,
@@ -35,12 +24,23 @@ const router = createBrowserRouter([
 		path: '/login',
 		element: <Login canRegister />,
 	},
+	{
+		path: '/',
+		element: (
+			<ProtectedRoute>
+				<App />,
+			</ProtectedRoute>
+		),
+	},
+	{
+		path: '*',
+		element: <Error404 />,
+	},
 ]);
 
 createRoot(document.getElementById('root')!).render(
 	<StrictMode>
 		<Toaster position="top-center" />
 		<RouterProvider router={router} />
-		<App />
 	</StrictMode>
 );

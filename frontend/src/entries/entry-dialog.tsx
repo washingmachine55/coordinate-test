@@ -19,44 +19,46 @@ import { toast } from 'sonner';
 export function EntryDialog() {
 	const [startPosition, setStartPosition] = useState('');
 	const [endPosition, setEndPosition] = useState('');
-	const [responseMsg, setResponseMsg] = useState('');
-	const [responseType, setResponseType] = useState('');
+	// const [responseMsg, setResponseMsg] = useState('');
+	// const [responseType, setResponseType] = useState('');
 
-	async function submitData() {
+	const handleSubmit = async () => {
+		// const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		// event.preventDefault();
 		try {
-			await axios
-				.post(
-					'http://localhost:3000/coordinates/add',
-					{
-						start_position: startPosition,
-						end_position: endPosition,
+			const axiosReqRes = await axios.post(
+				'http://localhost:3000/coordinates/add',
+				{
+					start_position: startPosition,
+					end_position: endPosition,
+				},
+				{
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: localStorage.getItem('token'),
 					},
-					{
-						headers: {
-							'Content-Type': 'application/json',
-							Authorization: localStorage.getItem('token'),
-						},
-					}
-				)
-				.then(
-					(responseMsg) => (setResponseMsg(responseMsg.data.message), setResponseType(responseMsg.data.type))
-				);
-		} catch (error) {
-			console.log(error);
-		} finally {
-			if (responseType == 'success') {
-				toast.success(responseMsg);
-			} else if (responseType == 'error') {
-				toast.error(responseMsg);
+				}
+			);
+
+			if (axiosReqRes.data.type == 'success') {
+				toast.success(axiosReqRes.data.message);
+				setTimeout(() => {
+					setStartPosition('');
+					setEndPosition('');
+				}, 500);
+			} else if (axiosReqRes.data.type == 'error') {
+				toast.error(axiosReqRes.data.message);
 			} else {
 				toast.info('Something went wrong, please try again later.');
 			}
+		} catch (error) {
+			console.debug(error);
 		}
-	}
+	};
 
 	return (
 		<Dialog>
-			<form onSubmit={submitData}>
+			<form>
 				<DialogTrigger asChild>
 					<Button variant="default">
 						<PlusIcon />
@@ -68,7 +70,7 @@ export function EntryDialog() {
 						<DialogTitle>Add new entry</DialogTitle>
 						<DialogDescription>
 							Enter your coordinates in the input fields below. The coordinates need to be in a format of
-							vaild [latitude,longitude] numerical values with optional decimal points.
+							valid [latitude,longitude] numerical values with optional decimal points.
 						</DialogDescription>
 					</DialogHeader>
 					<div className="grid gap-4">
@@ -99,7 +101,7 @@ export function EntryDialog() {
 						<DialogClose asChild>
 							<Button variant="outline">Cancel</Button>
 						</DialogClose>
-						<Button type="submit" value="submit" onClick={() => submitData()}>
+						<Button type="submit" value="submit" onClick={() => handleSubmit()}>
 							Save changes
 						</Button>
 					</DialogFooter>
