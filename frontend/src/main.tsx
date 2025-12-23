@@ -11,6 +11,8 @@ import { Toaster } from './components/ui/sonner.tsx';
 import ProtectedRoute from './lib/protected-route.tsx';
 import Error404 from './pages/error-404.tsx';
 import axios from 'axios';
+import { VerifyEmailByOTP } from './components/features/auth/verify-email-by-OTP.tsx';
+import EntriesMain from './pages/entries-main.tsx';
 
 axios.defaults.baseURL = 'https://localhost:3000';
 
@@ -31,7 +33,19 @@ const router = createBrowserRouter([
 		path: '/',
 		element: (
 			<ProtectedRoute>
-				<App />,
+				<App>
+					<EntriesMain />
+				</App>
+			</ProtectedRoute>
+		),
+	},
+	{
+		path: '/verify-otp',
+		element: (
+			<ProtectedRoute>
+				<App>
+					<VerifyEmailByOTP />
+				</App>
 			</ProtectedRoute>
 		),
 	},

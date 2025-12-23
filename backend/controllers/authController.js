@@ -1,5 +1,5 @@
 import pool from '../config/db.js';
-import sendVerificationEmail from '../mail/verifyEmailAddress.js';
+import { sendVerificationEmail, compareValidOTP, userIsVerifiedCheck } from '../services/sendAndSaveVerificationEmailDatabaseService.js';
 import verifyToken from '../middlewares/verifyToken.js';
 import { getUserId, isCredentialsMatching } from '../services/authenticateUserDatabaseService.js';
 import checkExistingEmail from '../services/checkExistingEmailDatabaseService.js';
@@ -56,7 +56,6 @@ async function registerUser(req, res) {
 		let userId = await getUserId(userEmail, userPassword);
 
 		let emailSent = await sendVerificationEmail(userId);
-		console.debug(emailSent);
 
 		const token = jwt.sign({ id: userId }, JWT_SECRET_KEY, { expiresIn: '1h' });
 		res.format({
@@ -174,4 +173,138 @@ async function verifyUserToken(req, res) {
 	}
 }
 
-export { registerUser, loginUser, logoutUser, verifyUserToken };
+async function resendOTP(req, res) {
+
+	const token = req.header('Authorization');
+	if (!token) return res.status(401).send('Access Denied');
+
+	try {
+		const verified = jwt.verify(token, JWT_SECRET_KEY);
+		const userId = verified.id;
+
+		const userIsVerified = await userIsVerifiedCheck(userId)
+
+		if (userIsVerified == true) {
+			return res.status(200).json([
+				{
+					type: 'error',
+					message: 'You are already verified',
+				},
+				{ user_id: userId },
+				{ Authorization: token },
+			]);
+		}
+
+		let emailSent = await sendVerificationEmail(userId);
+
+		if (emailSent == true) {
+			return res.status(200).json([
+				{
+					type: 'success',
+					message: 'OTP has been resent to your email. Please check your inbox',
+				},
+				{ user_id: userId },
+				{ Authorization: token },
+			]);
+		} else {
+			return res.status(200).json([
+				{
+					type: 'error',
+					message: 'You already have an unexpired OTP sent to your registered email address. Please check your inbox',
+				},
+				{ user_id: userId },
+				{ Authorization: token },
+			]);
+		}
+	} catch (error) {
+		res.status(400).send('Invalid Token. Please login.');
+	}
+
+}
+
+async function verifyOTP(req, res) {
+
+	const token = req.header('Authorization');
+	if (!token) return res.status(401).send('Access Denied');
+
+	const requestOTP = req.body.otp
+
+	try {
+		const verified = jwt.verify(token, JWT_SECRET_KEY);
+		const userId = verified.id;
+
+		const userIsVerified = await userIsVerifiedCheck(userId)
+
+		if (requestOTP.length < 6) {
+			return await res.format({
+				json() {
+					res.send([
+						{
+							type: 'error',
+							message: "OTP is not complete",
+						},
+					]);
+				},
+			});
+		} else {
+			if (userIsVerified == true) {
+				return res.status(200).json([
+					{
+						type: 'error',
+						message: 'You are already verified',
+					},
+					{ user_id: userId },
+					{ Authorization: token },
+				]);
+			} else {
+
+				let result = await compareValidOTP(userId, requestOTP)
+
+				if (result == true) {
+					return await res.format({
+						json() {
+							res.send([
+								{
+									type: 'success',
+									message: "OTP is correct. Your account is successfully verified!",
+								},
+							]);
+						},
+					});
+				} else {
+					return await res.format({
+						json() {
+							res.send([
+								{
+									type: 'error',
+									message: "OTP is not correct. Please re-enter OTP.",
+								},
+							]);
+						},
+					});
+				}
+			}
+		}
+
+		// const checkOTPFromDB = () => {
+		// 	return OTP and check if it is within time limit
+		// };
+
+		/* 
+			// check for OTP confirmation in email
+			// 2nd check if OTP is verified within time-limit otherwise it is expired
+
+			if (verification email ) {
+	
+			}
+		
+		
+		
+		 */
+	} catch (error) {
+		res.status(400).send('Invalid Token. Please login.');
+	}
+
+}
+
+export { registerUser, loginUser, logoutUser, verifyUserToken, resendOTP, verifyOTP };

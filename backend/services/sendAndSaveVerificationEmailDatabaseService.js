@@ -1,0 +1,106 @@
+import transporter from '../config/mailTransporter.js';
+import { getRandomOTP } from '../utils/index.js';
+import pool from "../config/db.js";
+
+// console.log("Message sent: %s", info.messageId);
+export async function sendVerificationEmail(userId) {
+	const conn = await pool.getConnection();
+
+	const userOTP = getRandomOTP();
+	const currentTimestamp = new Date();
+	let expirationTimestamp = new Date();
+
+	const expiration_time = Number(process.env.OTP_EXPIRATION_TIME)
+
+	expirationTimestamp = new Date(expirationTimestamp.setMinutes(expirationTimestamp.getMinutes() + expiration_time))
+
+	const currentTimestampISO = currentTimestamp.toISOString().replace('T', ' ').replace('Z', '')
+	const expirationTimestampISO = expirationTimestamp.toISOString().replace('T', ' ').replace('Z', '')
+
+	const request = [userId, currentTimestampISO]
+
+	try {
+		const emailCheck = await conn.query("SELECT CASE WHEN EXISTS(SELECT geo_news.verification_emails.user_id FROM geo_news.verification_emails WHERE user_id = ? AND email_sent = 1 AND ? < expiration_date) THEN 1 ELSE 0 END AS ExistsCheck; ", request);
+
+		let result = emailCheck[0].ExistsCheck.toString();
+
+		if (result == 1) {
+			return false;
+		} else {
+			// https://nodemailer.com/usage/testing-with-ethereal
+			const verificationMail = await transporter.sendMail({
+				from: '"Admin Sender" <test@example.com>',
+				to: "recipient@example.com",
+				subject: `Verify your Email: User ${userId}`,
+				text: "This is a test email sent via Nodemailer",
+				html: `<pThis is a <b>test verification email</b> sent via Nodemailer!</p><br/><p>Your OTP is ${userOTP}, and it expires on ${expirationTimestampISO}</p>`,
+			});
+
+			const verificationEmailRequest = [userId, "1", userOTP, expirationTimestampISO, currentTimestampISO]
+
+			const saveToDB = await conn.query("INSERT INTO verification_emails(user_id,email_sent,OTP_value,expiration_date,created_at) VALUES (?, ?, ?, ?, ?)", verificationEmailRequest);
+			await saveToDB;
+
+			return true;
+		}
+
+	} catch (error) {
+		console.debug(error)
+	} finally {
+		conn.end()
+	}
+}
+
+export async function compareValidOTP(userId, userOTP) {
+	const conn = await pool.getConnection();
+	const currentTimestamp = new Date();
+	const currentTimestampISO = currentTimestamp.toISOString().replace('T', ' ').replace('Z', '')
+
+	const request = [userId, currentTimestampISO, userOTP]
+
+	try {
+		// const query = await conn.query("SELECT UNIQUE geo_news.verification_emails.OTP_value FROM geo_news.verification_emails WHERE user_id = ? AND email_sent = 1 AND ? < expiration_date AND OTP_value = ?; ", request);
+		const query = await conn.query("SELECT CASE WHEN EXISTS(SELECT UNIQUE geo_news.verification_emails.OTP_value FROM geo_news.verification_emails WHERE user_id = ? AND email_sent = 1 AND ? < expiration_date AND OTP_value = ?)THEN 1 ELSE 0 END AS ExistsCheck; ", request);
+
+		// let compareOTP = Object.values(query[0])
+		let result = query[0].ExistsCheck.toString();
+
+		// if (Number(compareOTP) == Number(userOTP)) {
+		if (result == 1) {
+			const saveToDB = conn.query("UPDATE geo_news.users SET is_verified = 1 WHERE id = ?", userId);
+			await saveToDB;
+			return true;
+		} else {
+			return false;
+		}
+
+
+
+	} catch (error) {
+		console.debug(error)
+	} finally {
+		conn.end()
+	}
+}
+
+export async function userIsVerifiedCheck(userId) {
+	const conn = await pool.getConnection();
+	try {
+		// const query = await conn.query("SELECT is_verified FROM geo_news.users WHERE id = ? AND is_verified = 1; ", userId);
+		const query = await conn.query("SELECT CASE WHEN EXISTS(SELECT is_verified FROM geo_news.users WHERE id = ? AND is_verified = 1)THEN 1 ELSE 0 END AS ExistsCheck; ", userId);
+		
+		// let result = Number(Object.values(query[0]))
+		let result = query[0].ExistsCheck.toString();
+		
+
+		if (Number(result) == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	} catch (error) {
+		console.debug(error)
+	} finally {
+		conn.end()
+	}
+}

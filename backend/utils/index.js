@@ -7,3 +7,4 @@ export * from './giveDecision.js';
 export * from './calcDistance.js';
 export * from './confirmPassword.js';
 export * from './verifyUserToken.js';
+export * from './getRandomOTP.js';
