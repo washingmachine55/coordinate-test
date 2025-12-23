@@ -6,6 +6,7 @@
 	"scripts": {
 		"dev-server": "nodemon server.js",
 		"dev-debug": "DEBUG=coordinate-test:* nodemon server.js",
+		"secure-dev-debug": "HTTPS=true DEBUG=coordinate-test:* nodemon server.js",
 		"test": "node --watch server.js --env-file=.env -trace-sync-io",
 		"format": "prettier --write .",
 		"format:check": "prettier --check ."
@@ -22,7 +23,8 @@
 		"jsonwebtoken": "^9.0.3",
 		"mariadb": "^3.4.5",
 		"mongodb": "^7.0.0",
-		"mongoose": "^9.0.1"
+		"mongoose": "^9.0.1",
+		"nodemailer": "^7.0.12"
 	},
 	"devDependencies": {
 		"nodemon": "^3.1.11",

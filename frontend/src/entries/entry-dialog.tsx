@@ -27,7 +27,7 @@ export function EntryDialog() {
 		// event.preventDefault();
 		try {
 			const axiosReqRes = await axios.post(
-				'http://localhost:3000/coordinates/add',
+				'/coordinates/add',
 				{
 					start_position: startPosition,
 					end_position: endPosition,

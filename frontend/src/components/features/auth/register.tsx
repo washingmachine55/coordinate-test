@@ -21,7 +21,7 @@ export default function Register() {
 
 		try {
 			const axiosReqRes = await axios.post(
-				'http://localhost:3000/auth/register',
+				'/auth/register',
 				{
 					name: userName,
 					email: userEmail,

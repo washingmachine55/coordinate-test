@@ -49,5 +49,14 @@ curl --request POST \
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'));"
 ```
 
+## SSL Cert help
+### Created self trusted certificates for localhost testing
+```
+mkcert -install
+mkcert localhost 127.0.0.1 ::1
+```
+- Also added dev dependency for `mkcert` as `vite-plugin-mkcert` in frontend's package.json
+
+
 ## Next Step [24th December]
 - Implement email verification through [Nodemailer](https://nodemailer.com/) and [Ethereal email service](https://ethereal.email/)

@@ -10,6 +10,9 @@ import Login from './components/features/auth/login.tsx';
 import { Toaster } from './components/ui/sonner.tsx';
 import ProtectedRoute from './lib/protected-route.tsx';
 import Error404 from './pages/error-404.tsx';
+import axios from 'axios';
+
+axios.defaults.baseURL = 'https://localhost:3000';
 
 const router = createBrowserRouter([
 	{

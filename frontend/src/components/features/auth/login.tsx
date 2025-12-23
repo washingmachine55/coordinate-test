@@ -24,7 +24,7 @@ export default function Login({ status, canRegister }: LoginProps) {
 		event.preventDefault();
 		try {
 			const axiosReqRes = await axios.post(
-				'http://localhost:3000/auth/login',
+				'/auth/login',
 				{
 					email: userEmail,
 					password: userPassword,

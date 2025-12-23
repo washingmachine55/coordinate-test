@@ -94,7 +94,7 @@ const columns = [
 export function EntriesDataTable() {
 	// axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-	const url = 'http://localhost:3000/coordinates/all';
+	const url = '/coordinates/all';
 
 	useEffect(() => {
 		axios
