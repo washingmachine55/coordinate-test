@@ -29,26 +29,58 @@ const router = createBrowserRouter([
 		path: '/login',
 		element: <Login canRegister />,
 	},
+	// {
+	// 	path: '/logout',
+	// 	element: (
+	// 		<div
+	// 			onLoad={() => {
+	// 				localStorage.removeItem('token');
+	// 			}}
+	// 		></div>
+	// 	),
+	// },
 	{
 		path: '/',
-		element: (
-			<ProtectedRoute>
-				<App>
-					<EntriesMain />
-				</App>
-			</ProtectedRoute>
-		),
+		Component: ProtectedRoute,
+		children: [
+			{
+				index: true,
+				element: (
+					<App>
+						<EntriesMain />
+					</App>
+				),
+			},
+			{
+				path: 'verify-otp',
+				element: (
+					<App>
+						<VerifyEmailByOTP />
+					</App>
+				),
+			},
+		],
 	},
-	{
-		path: '/verify-otp',
-		element: (
-			<ProtectedRoute>
-				<App>
-					<VerifyEmailByOTP />
-				</App>
-			</ProtectedRoute>
-		),
-	},
+	// {
+	// 	path: '/',
+	// 	element: (
+	// 		<ProtectedRoute>
+	// 			<App>
+	// 				<EntriesMain />
+	// 			</App>
+	// 		</ProtectedRoute>
+	// 	),
+	// },
+	// {
+	// 	path: '/verify-otp',
+	// 	element: (
+	// 		<ProtectedRoute>
+	// 			<App>
+	// 				<VerifyEmailByOTP />
+	// 			</App>
+	// 		</ProtectedRoute>
+	// 	),
+	// },
 	{
 		path: '*',
 		element: <Error404 />,

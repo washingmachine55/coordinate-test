@@ -1,28 +1,48 @@
-import { Navigate } from 'react-router';
-import type { ReactNode } from 'react';
+import { Navigate, Outlet } from 'react-router';
+import axios from 'axios';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import App from '@/App';
+import { VerifyEmailByOTP } from '@/components/features/auth/verify-email-by-OTP';
+import { VerifiedContext } from './context';
 
-export default function ProtectedRoute({ children }: { children: ReactNode }): ReactNode {
-	// export default function ProtectedRoute() {
+// export default function ProtectedRoute({ children }: { children: ReactNode }): ReactNode {
+export default function ProtectedRoute() {
+	const [userIsVerified, setUserIsVerified] = useState(null);
 
-	// var [isLoggedIn,userHasAuthenticated] = useState(false);
-	// const navigate = useNavigate();
+	useEffect(() => {
+		axios
+			.get('/auth/verify-access', {
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: localStorage.getItem('token'),
+				},
+			})
+			.then((Response) => setUserIsVerified(Response.data[0].is_verified));
+	}, []);
 
-	// const userHasAuthenticated = useState(0);
-
-	// const isLoggedIn = async () => {
-	// 	try {
-	// 		if (!localStorage.getItem('token')) {
-	// 			return navigate('/login', { replace: true });
-	// 		}
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 	}
-	// };
+	// console.log(userIsVerified == 'true');
 
 	if (!localStorage.getItem('token')) {
-		// return <div onLoad={() => navigate(`/login`)}></div>;
 		return <Navigate to="/login" />;
-	} else {
-		return <div>{children}</div>;
 	}
+	if (userIsVerified == 'false') {
+		// return <Navigate to="/verify-otp" replace />;
+		return (
+			<App>
+				<VerifyEmailByOTP />
+			</App>
+		);
+	}
+
+	if (userIsVerified == 'true') {
+		return (
+			<VerifiedContext.Provider value={userIsVerified}>
+				<Outlet></Outlet>
+			</VerifiedContext.Provider>
+		);
+	}
+	// else {
+	// 	return <Navigate to="/guest" replace />;
+	// }
 }

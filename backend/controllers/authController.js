@@ -7,6 +7,7 @@ import registerUserToDatabase from '../services/registerDatabaseService.js';
 import { confirmPassword } from '../utils/index.js';
 
 import jwt from 'jsonwebtoken';
+import verifyUserAccessFromDatabase from '../services/verifyUserAccessDatabaseService.js';
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 async function registerUser(req, res) {
@@ -286,25 +287,46 @@ async function verifyOTP(req, res) {
 			}
 		}
 
-		// const checkOTPFromDB = () => {
-		// 	return OTP and check if it is within time limit
-		// };
-
-		/* 
-			// check for OTP confirmation in email
-			// 2nd check if OTP is verified within time-limit otherwise it is expired
-
-			if (verification email ) {
-	
-			}
-		
-		
-		
-		 */
 	} catch (error) {
+		res.status(400).send('Invalid Token. Please login.');
+	}
+}
+
+async function verifyUserAccess(req, res) {
+	const token = req.header('Authorization');
+	if (!token) return res.status(401).send('Access Denied');
+
+	try {
+		const verified = jwt.verify(token, JWT_SECRET_KEY);
+		const userId = verified.id;
+
+		const isVerified = await verifyUserAccessFromDatabase(userId)
+
+		if (isVerified == true) {
+			return res.status(200).json([
+				{
+					type: 'success',
+					message: 'Verified Token',
+					is_verified: 'true',
+				},
+				{ user_id: userId },
+				{ Authorization: token },
+			]);
+		} else {
+			return res.status(200).json([
+				{
+					type: 'error',
+					message: 'You have not verified your account. Please verify your account before trying again.',
+					is_verified: 'false',
+				},
+				{ user_id: userId },
+				{ Authorization: token },
+			]);
+		}
+	} catch (err) {
 		res.status(400).send('Invalid Token. Please login.');
 	}
 
 }
 
-export { registerUser, loginUser, logoutUser, verifyUserToken, resendOTP, verifyOTP };
+export { registerUser, loginUser, logoutUser, verifyUserToken, resendOTP, verifyOTP, verifyUserAccess };

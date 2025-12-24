@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
 	createColumnHelper,
@@ -23,6 +23,7 @@ import {
 	// MoreHorizontalIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 // import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 type Entry = {
@@ -92,22 +93,27 @@ const columns = [
 ];
 
 export function EntriesDataTable() {
-	// axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+	const [isLoading, setIsLoading] = useState(false);
 
 	const url = '/coordinates/all';
 
 	useEffect(() => {
-		axios
-			.get(url, {
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: localStorage.getItem('token'),
-				},
-			})
-			.then((Response) => setData(Response.data));
+		setIsLoading(true);
+		setTimeout(() => {
+			axios
+				.get(url, {
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: localStorage.getItem('token'),
+					},
+				})
+				.then((Response) => setData(Response.data));
+			setIsLoading(false);
+		}, 5000);
 	}, []);
 
-	const [data, setData] = React.useState(() => [...preferredData]);
+	// const [data, setData] = React.useState(() => [...preferredData]);
+	const [data, setData] = React.useState('');
 	// const rerender = React.useReducer(() => ({}), {})[1];
 
 	const table = useReactTable({
@@ -116,6 +122,73 @@ export function EntriesDataTable() {
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 	});
+
+	if (isLoading) {
+		return (
+			<div className="p-2 border rounded-3xl">
+				<Table className="min-w-[90%] mx-auto">
+					<TableHeader>
+						<TableRow>
+							<TableHead>
+								<Skeleton className="h-6 w-32 bg-gray-300" />
+							</TableHead>
+							<TableHead>
+								<Skeleton className="h-6 w-32 bg-gray-300" />
+							</TableHead>
+							<TableHead>
+								<Skeleton className="h-6 w-32 bg-gray-300" />
+							</TableHead>
+							<TableHead>
+								<Skeleton className="h-6 w-32 bg-gray-300" />
+							</TableHead>
+							<TableHead>
+								<Skeleton className="h-6 w-32 bg-gray-300" />
+							</TableHead>
+							<TableHead>
+								<Skeleton className="h-6 w-32 bg-gray-300" />
+							</TableHead>
+							<TableHead>
+								<Skeleton className="h-6 w-32 bg-gray-300" />
+							</TableHead>
+							<TableHead>
+								<Skeleton className="h-6 w-32 bg-gray-300" />
+							</TableHead>
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						{[...Array(12)].map((_, i) => (
+							<TableRow key={i}>
+								<TableCell>
+									<Skeleton className="h-5 w-[200px]" />
+								</TableCell>
+								<TableCell>
+									<Skeleton className="h-5 w-[200px]" />
+								</TableCell>
+								<TableCell>
+									<Skeleton className="h-5 w-[200px]" />
+								</TableCell>
+								<TableCell>
+									<Skeleton className="h-5 w-[200px]" />
+								</TableCell>
+								<TableCell>
+									<Skeleton className="h-5 w-[200px]" />
+								</TableCell>
+								<TableCell>
+									<Skeleton className="h-5 w-[200px]" />
+								</TableCell>
+								<TableCell>
+									<Skeleton className="h-5 w-[200px]" />
+								</TableCell>
+								<TableCell>
+									<Skeleton className="h-5 w-[200px]" />
+								</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+				</Table>
+			</div>
+		);
+	}
 
 	return (
 		<>
@@ -216,7 +289,7 @@ export function EntriesDataTable() {
 				Rerender
 			</Button> */}
 			</div>
-			<div>
+			{/* <div>
 				<Table>
 					<TableHeader>
 						<TableRow>
@@ -235,7 +308,7 @@ export function EntriesDataTable() {
 						</TableRow>
 					</TableBody>
 				</Table>
-			</div>
+			</div> */}
 		</>
 	);
 }

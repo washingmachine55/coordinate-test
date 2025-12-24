@@ -5,7 +5,8 @@ import {
 	logoutUser,
 	verifyUserToken,
 	resendOTP,
-	verifyOTP
+	verifyOTP,
+	verifyUserAccess
 } from '../controllers/authController.js';
 const router = express.Router();
 
@@ -18,5 +19,6 @@ router.get('/logout', logoutUser)
 router.get('/verify-token', verifyToken, verifyUserToken)
 router.get('/resend-otp', verifyToken, resendOTP)
 router.post('/verify-otp', verifyToken, verifyOTP)
+router.get('/verify-access', verifyToken, verifyUserAccess)
 
 export default router;

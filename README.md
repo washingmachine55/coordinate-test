@@ -111,6 +111,8 @@ WHERE user_id = 16 AND email_sent = 1 AND '2025-12-23 22:04:58.000' < expiration
 
 SELECT is_verified FROM geo_news.users WHERE id = 13 AND is_verified = 1
 
+SELECT CASE WHEN EXISTS(SELECT is_verified FROM geo_news.users WHERE id = 24 AND is_verified = 1) THEN 1 ELSE 0 END AS ExistsCheck;
+
 ```
 
 ## Next Step [24th December]

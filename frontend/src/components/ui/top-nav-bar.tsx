@@ -23,6 +23,7 @@ import {
 import { Button } from './button';
 import { MailWarningIcon } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import { VerifiedContext } from '@/lib/context';
 
 const components: { title: string; href: string; description: string }[] = [
 	{
@@ -71,53 +72,66 @@ const components: { title: string; href: string; description: string }[] = [
 
 export function TopNavBar() {
 	const navigate = useNavigate();
+	const userIsVerified = React.useContext(VerifiedContext);
 	return (
-		<NavigationMenu className="w-full flow-root">
-			<NavigationMenuList className="float-start">
-				<NavigationMenuItem>
-					<Button variant={'outline'} size={'default'} onClick={() => navigate('/')}>
-						Home
-					</Button>
-				</NavigationMenuItem>
-				<NavigationMenuItem>
-					<NavigationMenuTrigger>Components</NavigationMenuTrigger>
-					<NavigationMenuContent>
-						<ul className="grid gap-2 sm:w-100 md:w-125 md:grid-cols-2 lg:w-150">
-							{components.map((component) => (
-								<ListItem key={component.title} title={component.title} href={component.href}>
-									{component.description}
-								</ListItem>
-							))}
-						</ul>
-					</NavigationMenuContent>
-				</NavigationMenuItem>
-				<NavigationMenuItem>
-					<NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-						<a href="/docs">Docs</a>
-					</NavigationMenuLink>
-				</NavigationMenuItem>
-			</NavigationMenuList>
-			<NavigationMenuList className="float-end justify-end">
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button>Account</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent>
-						<DropdownMenuLabel>Account Options</DropdownMenuLabel>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem>
-							<Button variant={'link'} size={'sm'} onClick={() => navigate('/verify-otp')}>
-								<MailWarningIcon />
-								Verify Email
-							</Button>
-						</DropdownMenuItem>
-						<DropdownMenuItem>
-							<Logout />
-						</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
-			</NavigationMenuList>
-		</NavigationMenu>
+		<VerifiedContext.Provider value={userIsVerified}>
+			<NavigationMenu className="w-full flow-root">
+				<NavigationMenuList className="float-start">
+					<NavigationMenuItem>
+						<Button
+							variant={'outline'}
+							size={'default'}
+							onClick={() => navigate('/')}
+							disabled={!userIsVerified}
+						>
+							Home
+						</Button>
+					</NavigationMenuItem>
+					<NavigationMenuItem>
+						<NavigationMenuTrigger>Components</NavigationMenuTrigger>
+						<NavigationMenuContent>
+							<ul className="grid gap-2 sm:w-100 md:w-125 md:grid-cols-2 lg:w-150">
+								{components.map((component) => (
+									<ListItem key={component.title} title={component.title} href={component.href}>
+										{component.description}
+									</ListItem>
+								))}
+							</ul>
+						</NavigationMenuContent>
+					</NavigationMenuItem>
+					<NavigationMenuItem>
+						<NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+							<a href="/docs">Docs</a>
+						</NavigationMenuLink>
+					</NavigationMenuItem>
+				</NavigationMenuList>
+				<NavigationMenuList className="float-end justify-end">
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button>Account</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent>
+							<DropdownMenuLabel>Account Options</DropdownMenuLabel>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem>
+								<Button
+									variant={'link'}
+									size={'sm'}
+									onClick={() => navigate('/verify-otp')}
+									disabled={userIsVerified}
+								>
+									<MailWarningIcon />
+									Verify Email
+								</Button>
+							</DropdownMenuItem>
+							<DropdownMenuItem>
+								<Logout />
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				</NavigationMenuList>
+			</NavigationMenu>
+		</VerifiedContext.Provider>
 	);
 }
 
