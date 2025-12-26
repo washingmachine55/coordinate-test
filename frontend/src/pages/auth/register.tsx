@@ -21,7 +21,7 @@ export default function Register() {
 
 		try {
 			const axiosReqRes = await axios.post(
-				'/auth/register',
+				'https://localhost:3000/auth/register',
 				{
 					name: userName,
 					email: userEmail,
@@ -46,7 +46,7 @@ export default function Register() {
 				toast.info('Something went wrong, please try again later.');
 			}
 		} catch (error) {
-			console.log(error);
+			console.debug(error);
 		}
 	};
 
@@ -92,6 +92,7 @@ export default function Register() {
 							tabIndex={3}
 							value={userPassword}
 							onChange={(e) => setUserPassword(e.target.value)}
+							autoComplete="password"
 							placeholder="Password"
 						/>
 						<InputError message={'errors.password'} />
@@ -102,6 +103,7 @@ export default function Register() {
 						<Input
 							id="password_confirmation"
 							type="password"
+							autoComplete="password_confirmation"
 							required
 							tabIndex={4}
 							value={confirmedPassword}

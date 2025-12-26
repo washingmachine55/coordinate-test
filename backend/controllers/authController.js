@@ -13,11 +13,23 @@ const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 async function registerUser(req, res) {
 	let request = Object.values(req.body);
 	let userName = request[0];
+	let userEmail = request[1];
+	let userPassword = request[2];
+
+	if (userName == null || userEmail == null || userPassword == null) {
+		return res.format({
+			json() {
+				res.send({
+					type: 'error',
+					message: "One or more input fields are empty. Please fill up all the input fields before submitting.",
+				});
+			},
+		});
+	} else {
 
 	// --------------------------------------------------------------------------- //
 	// Check if email exists in database already
-	// --------------------------------------------------------------------------- //
-	let userEmail = request[1];
+		// --------------------------------------------------------------------------- //
 	let existingEmailCheck = await checkExistingEmail(userEmail);
 
 	if (existingEmailCheck == false) {
@@ -32,10 +44,9 @@ async function registerUser(req, res) {
 	}
 	// --------------------------------------------------------------------------- //
 	// Password Confirmation Check
-	// --------------------------------------------------------------------------- //
-	let userPassword = request[2];
+		// --------------------------------------------------------------------------- //
 	let userConfirmedPassword = request[3];
-	let confirmPasswordCheck = await confirmPassword(userPassword, userConfirmedPassword);
+		let confirmPasswordCheck = confirmPassword(userPassword, userConfirmedPassword);
 
 	if (confirmPasswordCheck == false) {
 		return await res.format({
@@ -48,30 +59,31 @@ async function registerUser(req, res) {
 		});
 	}
 
-	// --------------------------------------------------------------------------- //
-	// Save User details to Database if all checks are cleared
-	// --------------------------------------------------------------------------- //
-	const entryArray = [userName, userEmail, userPassword];
-	try {
-		await registerUserToDatabase(entryArray);
-		let userId = await getUserId(userEmail, userPassword);
+		// --------------------------------------------------------------------------- //
+		// Save User details to Database if all checks are cleared
+		// --------------------------------------------------------------------------- //
+		const entryArray = [userName, userEmail, userPassword];
+		try {
+			await registerUserToDatabase(entryArray);
+			let userId = await getUserId(userEmail, userPassword);
 
-		let emailSent = await sendVerificationEmail(userId);
+			let emailSent = await sendVerificationEmail(userId);
 
-		const token = jwt.sign({ id: userId }, JWT_SECRET_KEY, { expiresIn: '1h' });
-		res.format({
-			json() {
-				res.send([
-					{
-						type: 'success',
-						message: 'Registered Successfully!',
-					},
-					{ token },
-				]);
-			},
-		});
-	} catch (error) {
-		console.error('Error creating record:', error);
+			const token = jwt.sign({ id: userId }, JWT_SECRET_KEY, { expiresIn: '1h' });
+			return res.format({
+				json() {
+					res.send([
+						{
+							type: 'success',
+							message: 'Registered Successfully!',
+						},
+						{ token },
+					]);
+				},
+			});
+		} catch (error) {
+			console.error('Error creating record:', error);
+		}
 	}
 }
 

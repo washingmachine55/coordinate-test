@@ -11,7 +11,7 @@ import {
 	NavigationMenuTrigger,
 	navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
-import Logout from '../features/auth/logout';
+import Logout from '../../pages/auth/logout';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -23,7 +23,7 @@ import {
 import { Button } from './button';
 import { MailWarningIcon } from 'lucide-react';
 import { useNavigate } from 'react-router';
-import { VerifiedContext } from '@/lib/context';
+import { AuthContext } from '@/lib/auth-context';
 
 const components: { title: string; href: string; description: string }[] = [
 	{
@@ -72,9 +72,9 @@ const components: { title: string; href: string; description: string }[] = [
 
 export function TopNavBar() {
 	const navigate = useNavigate();
-	const userIsVerified = React.useContext(VerifiedContext);
+	const userStatus = React.useContext(AuthContext);
 	return (
-		<VerifiedContext.Provider value={userIsVerified}>
+		<AuthContext.Provider value={userStatus}>
 			<NavigationMenu className="w-full flow-root">
 				<NavigationMenuList className="float-start">
 					<NavigationMenuItem>
@@ -82,7 +82,7 @@ export function TopNavBar() {
 							variant={'outline'}
 							size={'default'}
 							onClick={() => navigate('/')}
-							disabled={!userIsVerified}
+							disabled={userStatus == 'loggedInUser'}
 						>
 							Home
 						</Button>
@@ -117,8 +117,8 @@ export function TopNavBar() {
 								<Button
 									variant={'link'}
 									size={'sm'}
-									onClick={() => navigate('/verify-otp')}
-									disabled={userIsVerified}
+									onClick={() => navigate('/verify/otp')}
+									disabled={userStatus == 'verifiedUser'}
 								>
 									<MailWarningIcon />
 									Verify Email
@@ -131,7 +131,7 @@ export function TopNavBar() {
 					</DropdownMenu>
 				</NavigationMenuList>
 			</NavigationMenu>
-		</VerifiedContext.Provider>
+		</AuthContext.Provider>
 	);
 }
 

@@ -1,5 +1,5 @@
-import { EntryDialog } from '@/entries/entry-dialog';
-import { EntriesDataTable } from '@/entries/data-table';
+import { EntryDialog } from '@/pages/entries/entry-dialog';
+import { EntriesDataTable } from '@/pages/entries/data-table';
 
 function EntriesMain() {
 	return (
