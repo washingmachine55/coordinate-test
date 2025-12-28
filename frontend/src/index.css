@@ -80,7 +80,8 @@
 }
 
 .dark {
-	--background: oklch(0.145 0 0);
+	/* --background: oklch(0.145 0 0); */
+	--background: oklch(0.245 0 0);
 	--foreground: oklch(0.985 0 0);
 	--card: oklch(0.205 0 0);
 	--card-foreground: oklch(0.985 0 0);
@@ -119,5 +120,30 @@
 	}
 	body {
 		@apply bg-background text-foreground;
+	}
+}
+
+/* /* .pattern-container { */
+	/* Add your background pattern here */
+	/* background-color: #ffffff; */
+	/* background-image: radial-gradient(rgba(100, 100, 100, 0.371) 2px, transparent 0); */
+	/* background-size: 30px 30px; */
+	/* background-position: -5px -5px; */
+
+	/* @variant dark { */
+		/* background-color: transparent; */
+		/* background-image: radial-gradient(rgba(100, 100, 100, 0.971) 2px, transparent 0); */
+	/* } */
+/* }  */
+.pattern-container {
+	/* Add your background pattern here */
+	background-color: #ffffff;
+	background-image: radial-gradient(rgba(100, 100, 100, 0.371) 2px, transparent 0);
+	background-size: 30px 30px;
+	background-position: -5px -5px;
+
+	@variant dark {
+		background-color: transparent;
+		background-image: radial-gradient(rgba(100, 100, 100, 0.971) 2px, transparent 0);
 	}
 }

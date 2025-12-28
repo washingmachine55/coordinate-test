@@ -1,9 +1,22 @@
 import axios from 'axios';
 
-// axios.defaults.baseURL = 'https://localhost:3000';
-export const axiosInstance = axios.create({
-	baseURL: 'https://localhost:3000',
+const url = 'https://localhost:3000';
+const timeoutValue = 5000;
+const token = localStorage.getItem('token');
+
+const axiosInstance = axios.create({
+	baseURL: url,
+	timeout: timeoutValue,
+	headers: {
+		'Content-Type': 'application/json',
+		Authorization: token,
+	},
 });
-axiosInstance.defaults.headers.post['Content-Type'] = 'application/json';
-axiosInstance.defaults.headers.common['Authorization'] = localStorage.getItem('token');
-axiosInstance.defaults.timeout = 10000;
+
+const axiosInstanceWithoutHeaders = axios.create({
+	baseURL: url,
+	timeout: timeoutValue,
+	headers: { 'Content-Type': 'application/json' },
+});
+
+export { axiosInstance, axiosInstanceWithoutHeaders };

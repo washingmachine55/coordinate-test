@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { Spinner } from '@/components/ui/spinner';
 import { Navigate, redirect, useNavigate } from 'react-router';
 import { axiosInstance } from '@/lib/axios-headers';
+import App from '@/App';
 
 export function VerifyEmailByOTP() {
 	const [value, setValue] = useState('');
@@ -57,19 +58,16 @@ export function VerifyEmailByOTP() {
 	const verifyOTP = async () => {
 		setIsLoading(true);
 		try {
-			const axiosReqRes = await axiosInstance.post(
-				'/auth/verify-otp',
-				{
-					otp: value,
-				}
-			);
+			const axiosReqRes = await axiosInstance.post('/auth/verify-otp', {
+				otp: value,
+			});
 			if (axiosReqRes.data[0].type == 'success') {
 				toast.success(axiosReqRes.data[0].message);
 				setIsLoading(false);
 				setTimeout(() => {
 					toast.info('Redirecting you to the homepage in 3 seconds');
 					// redirect('/'); // doesn't work - Speculation is due to bad code relating to useContext
-					navigate('/', {replace: true}); // doesn't work - Speculation is due to bad code relating to useContext
+					navigate('/', { replace: true }); // doesn't work - Speculation is due to bad code relating to useContext
 				}, 3000);
 			} else if (axiosReqRes.data[0].type == 'error') {
 				toast.error(axiosReqRes.data[0].message);
@@ -80,6 +78,7 @@ export function VerifyEmailByOTP() {
 			}
 		} catch (error) {
 			console.debug(error);
+			setIsLoading(false);
 		}
 	};
 
@@ -99,56 +98,59 @@ export function VerifyEmailByOTP() {
 	};
 
 	return (
-		<>
-			<div className="flex flex-col items-center space-y-4 fixed justify-self-center my-auto h-[75vh] place-content-center">
-				<div className="flex flex-row space-x-2 items-center">
-					<InputOTP
-						maxLength={6}
-						pattern={REGEXP_ONLY_DIGITS}
-						value={value}
-						onChange={(value) => setValue(value)}
-					>
-						<InputOTPGroup>
-							<InputOTPSlot index={0} />
-							<InputOTPSlot index={1} />
-							<InputOTPSlot index={2} />
-							{/* </InputOTPGroup> */}
-							{/* <InputOTPSeparator /> */}
-							{/* <InputOTPGroup> */}
-							<InputOTPSlot index={3} />
-							<InputOTPSlot index={4} />
-							<InputOTPSlot index={5} />
-						</InputOTPGroup>
-					</InputOTP>
-					<div className="flex flex-col space-y-0.5">
-						<Button variant={'outline'} size={'icon-sm'} onClick={() => setValue(value.slice(0, -1))}>
-							<DeleteIcon />
+		<App>
+			<div className="flex flex-row justify-center">
+				<div className="flex flex-col items-center space-y-4 fixed justify-self-center my-auto h-[75vh] place-content-center">
+					<div className="flex flex-row space-x-2 items-center">
+						<InputOTP
+							maxLength={6}
+							pattern={REGEXP_ONLY_DIGITS}
+							value={value}
+							required
+							onChange={(value) => setValue(value)}
+						>
+							<InputOTPGroup>
+								<InputOTPSlot index={0} />
+								<InputOTPSlot index={1} />
+								<InputOTPSlot index={2} />
+								{/* </InputOTPGroup> */}
+								{/* <InputOTPSeparator /> */}
+								{/* <InputOTPGroup> */}
+								<InputOTPSlot index={3} />
+								<InputOTPSlot index={4} />
+								<InputOTPSlot index={5} />
+							</InputOTPGroup>
+						</InputOTP>
+						<div className="flex flex-col space-y-0.5">
+							<Button variant={'outline'} size={'icon-sm'} onClick={() => setValue(value.slice(0, -1))}>
+								<DeleteIcon />
+							</Button>
+							<Button variant={'destructive'} size={'icon-sm'} onClick={() => setValue('')}>
+								<EraserIcon />
+							</Button>
+						</div>
+					</div>
+					<div className="flex flex-row space-x-2">
+						<Button variant={'default'} size={'lg'} onClick={() => verifyOTP()}>
+							{isLoading ? (
+								<>
+									<Spinner />
+									<p>Verifying OTP</p>
+								</>
+							) : (
+								<>
+									<MailWarningIcon />
+									<p>Verify OTP</p>
+								</>
+							)}
 						</Button>
-						<Button variant={'destructive'} size={'icon-sm'} onClick={() => setValue('')}>
-							<EraserIcon />
+						<Button variant={'outline'} size={'lg'} onClick={() => resendOTP()}>
+							<MailWarningIcon />
+							Resend OTP
 						</Button>
 					</div>
 				</div>
-				<div className="flex flex-row space-x-2">
-					<Button variant={'default'} size={'lg'} onClick={() => verifyOTP()}>
-						{isLoading ? (
-							<>
-								<Spinner />
-								<p>Verifying OTP</p>
-							</>
-						) : (
-							<>
-								<MailWarningIcon />
-								<p>Verify OTP</p>
-							</>
-						)}
-					</Button>
-					<Button variant={'outline'} size={'lg'} onClick={() => resendOTP()}>
-						<MailWarningIcon />
-						Resend OTP
-					</Button>
-				</div>
 			</div>
-		</>
+		</App>
 	);
 }

@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Spinner } from '@/components/ui/spinner';
 import { axiosInstance } from '@/lib/axios-headers';
 import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
@@ -19,31 +20,35 @@ import { toast } from 'sonner';
 export function EntryDialog() {
 	const [startPosition, setStartPosition] = useState('');
 	const [endPosition, setEndPosition] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
 	// const [responseMsg, setResponseMsg] = useState('');
 	// const [responseType, setResponseType] = useState('');
 
 	const handleSubmit = async () => {
+		setIsLoading(true);
 		// const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		// event.preventDefault();
 		try {
-			const axiosReqRes = await axiosInstance.post(
-				'/coordinates/add',
-				{
-					start_position: startPosition,
-					end_position: endPosition,
-				}
-			);
+			const axiosReqRes = await axiosInstance.post('/coordinates/add', {
+				start_position: startPosition,
+				end_position: endPosition,
+			});
 
 			if (axiosReqRes.data.type == 'success') {
-				toast.success(axiosReqRes.data.message);
 				setTimeout(() => {
+					toast.success(axiosReqRes.data.message);
 					setStartPosition('');
 					setEndPosition('');
-				}, 500);
+					setIsLoading(false);
+				}, 3000);
 			} else if (axiosReqRes.data.type == 'error') {
-				toast.error(axiosReqRes.data.message);
+				setTimeout(() => {
+					toast.error(axiosReqRes.data.message);
+					setIsLoading(false);
+				}, 3000);
 			} else {
 				toast.info('Something went wrong, please try again later.');
+				setIsLoading(false);
 			}
 		} catch (error) {
 			console.debug(error);
@@ -96,7 +101,14 @@ export function EntryDialog() {
 							<Button variant="outline">Cancel</Button>
 						</DialogClose>
 						<Button type="submit" value="submit" onClick={() => handleSubmit()}>
-							Save changes
+							{isLoading ? (
+								<>
+									<Spinner />
+									Saving Changes
+								</>
+							) : (
+								<>Save changes</>
+							)}
 						</Button>
 					</DialogFooter>
 				</DialogContent>

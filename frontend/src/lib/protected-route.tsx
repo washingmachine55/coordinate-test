@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from 'react-router';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { axiosInstanceWithoutHeaders } from './axios-headers';
 // import { useState } from 'react';
 // import { AuthContext } from './auth-context';
 
@@ -11,13 +11,8 @@ export default function ProtectedRoute() {
 	const [userStatus, setUserStatus] = useState('');
 
 	useEffect(() => {
-		axios
-			.get('https://localhost:3000/auth/verify-access', {
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: localStorage.getItem('token'),
-				},
-			})
+		axiosInstanceWithoutHeaders
+			.get('/auth/verify-access')
 			// .then((Response) => setUserIsVerified(Response.data[0].is_verified));
 			.then((Response) => {
 				if (Response.data[0].is_verified == 'true') {

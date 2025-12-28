@@ -6,9 +6,9 @@ import InputError from '@/components/ui/input-error';
 import { Label } from '@/components/ui/label';
 import TextLink from '@/components/ui/text-link';
 import { toast } from 'sonner';
-import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { axiosInstanceWithoutHeaders } from '@/lib/axios-headers';
 
 interface LoginProps {
 	status?: string;
@@ -23,18 +23,10 @@ export default function Login({ status, canRegister }: LoginProps) {
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		try {
-			const axiosReqRes = await axios.post(
-				'/auth/login',
-				{
-					email: userEmail,
-					password: userPassword,
-				},
-				{
-					headers: {
-						'Content-Type': 'application/json',
-					},
-				}
-			);
+			const axiosReqRes = await axiosInstanceWithoutHeaders.post('/auth/login', {
+				email: userEmail,
+				password: userPassword,
+			});
 
 			if (axiosReqRes.data[0].type == 'success') {
 				localStorage.setItem('token', axiosReqRes.data[1].token);

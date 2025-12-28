@@ -16,7 +16,6 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
-import axios from 'axios';
 import {
 	ChevronLeftIcon,
 	ChevronRightIcon,
@@ -64,11 +63,14 @@ const columns = [
 	columnHelper.accessor('name', {
 		header: () => <span>User's Name</span>,
 	}),
-	columnHelper.accessor((row) => row.start_lat, {
-		id: 'start_lat',
-		// cell: (info) => <i>{info.getValue()}</i>,
+	// columnHelper.accessor((row) => row.start_lat, {
+	// 	id: 'start_lat',
+	// 	// cell: (info) => <i>{info.getValue()}</i>,
+	// 	header: () => <span>Start Latitude</span>,
+	// 	// footer: (info) => info.column.id,
+	// }),
+	columnHelper.accessor('start_lat', {
 		header: () => <span>Start Latitude</span>,
-		// footer: (info) => info.column.id,
 	}),
 	columnHelper.accessor('start_long', {
 		header: () => 'Start Longitude',
@@ -99,11 +101,9 @@ export function EntriesDataTable() {
 	useEffect(() => {
 		setIsLoading(true);
 		setTimeout(() => {
-			axiosInstance
-				.get('/coordinates/all')
-				.then((Response) => setData(Response.data));
+			axiosInstance.get('/coordinates/all').then((Response) => setData(Response.data));
 			setIsLoading(false);
-		}, 5000);
+		}, 500);
 	}, []);
 
 	// const [data, setData] = React.useState(() => [...preferredData]);
@@ -186,7 +186,7 @@ export function EntriesDataTable() {
 
 	return (
 		<>
-			<div className="p-2 overflow-hidden bg-gray-200 rounded-3xl">
+			<div className="p-2 bg-gray-200 rounded-3xl">
 				<Table>
 					<TableHeader className="testing">
 						{table.getHeaderGroups().map((headerGroup) => (
