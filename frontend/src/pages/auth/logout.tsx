@@ -10,10 +10,10 @@ export default function Logout() {
 		try {
 			if (!localStorage.getItem('token')) {
 				// throw redirect('/login');
-				throw navigate('/login', { replace: true });
+				throw navigate('/auth/login', { replace: true });
 			} else {
 				localStorage.removeItem('token');
-				throw navigate('/login', { replace: true });
+				throw navigate('/auth/login', { replace: true });
 				redirect('/login');
 			}
 		} catch (error) {

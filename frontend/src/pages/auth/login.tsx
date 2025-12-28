@@ -103,7 +103,7 @@ export default function Login({ status, canRegister }: LoginProps) {
 
 				{canRegister && (
 					<div className="text-center text-sm text-muted-foreground">
-						Don't have an account? <TextLink href="/register">Sign up</TextLink>
+						Don't have an account? <TextLink href="/auth/register">Sign up</TextLink>
 					</div>
 				)}
 			</form>

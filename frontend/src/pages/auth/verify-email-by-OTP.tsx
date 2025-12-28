@@ -11,11 +11,13 @@ import { DeleteIcon, EraserIcon, MailWarningIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Spinner } from '@/components/ui/spinner';
-import { redirect } from 'react-router';
+import { Navigate, redirect, useNavigate } from 'react-router';
+import { axiosInstance } from '@/lib/axios-headers';
 
 export function VerifyEmailByOTP() {
 	const [value, setValue] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
+	const navigate = useNavigate();
 
 	// const handleSubmit = async () => {
 	// const handleSubmit = async (e) => {
@@ -55,16 +57,10 @@ export function VerifyEmailByOTP() {
 	const verifyOTP = async () => {
 		setIsLoading(true);
 		try {
-			const axiosReqRes = await axios.post(
+			const axiosReqRes = await axiosInstance.post(
 				'/auth/verify-otp',
 				{
 					otp: value,
-				},
-				{
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: localStorage.getItem('token'),
-					},
 				}
 			);
 			if (axiosReqRes.data[0].type == 'success') {
@@ -72,7 +68,8 @@ export function VerifyEmailByOTP() {
 				setIsLoading(false);
 				setTimeout(() => {
 					toast.info('Redirecting you to the homepage in 3 seconds');
-					throw redirect('/'); // doesn't work - Speculation is due to bad code relating to useContext
+					// redirect('/'); // doesn't work - Speculation is due to bad code relating to useContext
+					navigate('/', {replace: true}); // doesn't work - Speculation is due to bad code relating to useContext
 				}, 3000);
 			} else if (axiosReqRes.data[0].type == 'error') {
 				toast.error(axiosReqRes.data[0].message);
@@ -88,12 +85,7 @@ export function VerifyEmailByOTP() {
 
 	const resendOTP = async () => {
 		try {
-			const axiosReqRes = await axios.get('/auth/resend-otp', {
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: localStorage.getItem('token'),
-				},
-			});
+			const axiosReqRes = await axiosInstance.get('/auth/resend-otp');
 			if (axiosReqRes.data[0].type == 'success') {
 				toast.success(axiosReqRes.data[0].message);
 			} else if (axiosReqRes.data[0].type == 'error') {

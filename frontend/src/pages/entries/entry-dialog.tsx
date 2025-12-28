@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import axios from 'axios';
+import { axiosInstance } from '@/lib/axios-headers';
 import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -26,17 +26,11 @@ export function EntryDialog() {
 		// const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		// event.preventDefault();
 		try {
-			const axiosReqRes = await axios.post(
+			const axiosReqRes = await axiosInstance.post(
 				'/coordinates/add',
 				{
 					start_position: startPosition,
 					end_position: endPosition,
-				},
-				{
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: localStorage.getItem('token'),
-					},
 				}
 			);
 

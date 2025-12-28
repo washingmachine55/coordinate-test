@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { axiosInstance } from '@/lib/axios-headers';
 // import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 type Entry = {
@@ -95,18 +96,11 @@ const columns = [
 export function EntriesDataTable() {
 	const [isLoading, setIsLoading] = useState(false);
 
-	const url = '/coordinates/all';
-
 	useEffect(() => {
 		setIsLoading(true);
 		setTimeout(() => {
-			axios
-				.get(url, {
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: localStorage.getItem('token'),
-					},
-				})
+			axiosInstance
+				.get('/coordinates/all')
 				.then((Response) => setData(Response.data));
 			setIsLoading(false);
 		}, 5000);

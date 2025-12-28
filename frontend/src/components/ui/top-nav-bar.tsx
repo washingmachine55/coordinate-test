@@ -11,7 +11,7 @@ import {
 	NavigationMenuTrigger,
 	navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
-import Logout from '../features/auth/logout';
+import Logout from '../../pages/auth/logout';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
