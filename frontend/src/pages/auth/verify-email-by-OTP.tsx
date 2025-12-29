@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button';
-import axios from 'axios';
 import {
 	InputOTP,
 	InputOTPGroup,
@@ -11,7 +10,7 @@ import { DeleteIcon, EraserIcon, MailWarningIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Spinner } from '@/components/ui/spinner';
-import { Navigate, redirect, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { axiosInstance } from '@/lib/axios-headers';
 import App from '@/App';
 
@@ -19,41 +18,6 @@ export function VerifyEmailByOTP() {
 	const [value, setValue] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
 	const navigate = useNavigate();
-
-	// const handleSubmit = async () => {
-	// const handleSubmit = async (e) => {
-	// 	e.preDefault();
-	// 	e.stopPropagation();
-	// 	try {
-	// 		const axiosReqRes = await axios.post(
-	// 			'/coordinates/add',
-	// 			{
-	// 				start_position: startPosition,
-	// 				end_position: endPosition,
-	// 			},
-	// 			{
-	// 				headers: {
-	// 					'Content-Type': 'application/json',
-	// 					Authorization: localStorage.getItem('token'),
-	// 				},
-	// 			}
-	// 		);
-
-	// 		if (axiosReqRes.data.type == 'success') {
-	// 			toast.success(axiosReqRes.data.message);
-	// 			setTimeout(() => {
-	// 				setStartPosition('');
-	// 				setEndPosition('');
-	// 			}, 500);
-	// 		} else if (axiosReqRes.data.type == 'error') {
-	// 			toast.error(axiosReqRes.data.message);
-	// 		} else {
-	// 			toast.info('Something went wrong, please try again later.');
-	// 		}
-	// 	} catch (error) {
-	// 		console.debug(error);
-	// 	}
-	// };
 
 	const verifyOTP = async () => {
 		setIsLoading(true);
@@ -65,10 +29,12 @@ export function VerifyEmailByOTP() {
 				toast.success(axiosReqRes.data[0].message);
 				setIsLoading(false);
 				setTimeout(() => {
-					toast.info('Redirecting you to the homepage in 3 seconds');
+					toast.info('Redirecting you to the homepage in 3 seconds.');
+				}, 1000);
+				setTimeout(() => {
 					// redirect('/'); // doesn't work - Speculation is due to bad code relating to useContext
 					navigate('/', { replace: true }); // doesn't work - Speculation is due to bad code relating to useContext
-				}, 3000);
+				}, 4000);
 			} else if (axiosReqRes.data[0].type == 'error') {
 				toast.error(axiosReqRes.data[0].message);
 				setIsLoading(false);

@@ -97,7 +97,6 @@ async function loginUser(req, res) {
 		// Check if email doesn't exist in database already
 		// --------------------------------------------------------------------------- //
 		let existingEmailCheck = await checkExistingEmail(userEmail);
-		console.log(existingEmailCheck);
 
 		if (existingEmailCheck == true) {
 			return await res.format({
@@ -223,7 +222,7 @@ async function resendOTP(req, res) {
 			return res.status(200).json([
 				{
 					type: 'error',
-					message: 'You already have an unexpired OTP sent to your registered email address. Please check your inbox',
+					message: 'An error has occurred. Please try again later.',
 				},
 				{ user_id: userId },
 				{ Authorization: token },

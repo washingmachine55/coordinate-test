@@ -124,28 +124,28 @@ export function EntriesDataTable() {
 					<TableHeader>
 						<TableRow>
 							<TableHead>
-								<Skeleton className="h-6 w-32 bg-gray-300" />
+								<Skeleton className="h-6 w-32 bg-gray-300 dark:bg-zinc-600" />
 							</TableHead>
 							<TableHead>
-								<Skeleton className="h-6 w-32 bg-gray-300" />
+								<Skeleton className="h-6 w-32 bg-gray-300 dark:bg-zinc-600" />
 							</TableHead>
 							<TableHead>
-								<Skeleton className="h-6 w-32 bg-gray-300" />
+								<Skeleton className="h-6 w-32 bg-gray-300 dark:bg-zinc-600" />
 							</TableHead>
 							<TableHead>
-								<Skeleton className="h-6 w-32 bg-gray-300" />
+								<Skeleton className="h-6 w-32 bg-gray-300 dark:bg-zinc-600" />
 							</TableHead>
 							<TableHead>
-								<Skeleton className="h-6 w-32 bg-gray-300" />
+								<Skeleton className="h-6 w-32 bg-gray-300 dark:bg-zinc-600" />
 							</TableHead>
 							<TableHead>
-								<Skeleton className="h-6 w-32 bg-gray-300" />
+								<Skeleton className="h-6 w-32 bg-gray-300 dark:bg-zinc-600" />
 							</TableHead>
 							<TableHead>
-								<Skeleton className="h-6 w-32 bg-gray-300" />
+								<Skeleton className="h-6 w-32 bg-gray-300 dark:bg-zinc-600" />
 							</TableHead>
 							<TableHead>
-								<Skeleton className="h-6 w-32 bg-gray-300" />
+								<Skeleton className="h-6 w-32 bg-gray-300 dark:bg-zinc-600" />
 							</TableHead>
 						</TableRow>
 					</TableHeader>
@@ -153,28 +153,28 @@ export function EntriesDataTable() {
 						{[...Array(12)].map((_, i) => (
 							<TableRow key={i}>
 								<TableCell>
-									<Skeleton className="h-5 w-[200px]" />
+									<Skeleton className="h-5 w-[200px] dark:bg-zinc-700" />
 								</TableCell>
 								<TableCell>
-									<Skeleton className="h-5 w-[200px]" />
+									<Skeleton className="h-5 w-[200px] dark:bg-zinc-700" />
 								</TableCell>
 								<TableCell>
-									<Skeleton className="h-5 w-[200px]" />
+									<Skeleton className="h-5 w-[200px] dark:bg-zinc-700" />
 								</TableCell>
 								<TableCell>
-									<Skeleton className="h-5 w-[200px]" />
+									<Skeleton className="h-5 w-[200px] dark:bg-zinc-700" />
 								</TableCell>
 								<TableCell>
-									<Skeleton className="h-5 w-[200px]" />
+									<Skeleton className="h-5 w-[200px] dark:bg-zinc-700" />
 								</TableCell>
 								<TableCell>
-									<Skeleton className="h-5 w-[200px]" />
+									<Skeleton className="h-5 w-[200px] dark:bg-zinc-700" />
 								</TableCell>
 								<TableCell>
-									<Skeleton className="h-5 w-[200px]" />
+									<Skeleton className="h-5 w-[200px] dark:bg-zinc-700" />
 								</TableCell>
 								<TableCell>
-									<Skeleton className="h-5 w-[200px]" />
+									<Skeleton className="h-5 w-[200px] dark:bg-zinc-700" />
 								</TableCell>
 							</TableRow>
 						))}
@@ -186,15 +186,15 @@ export function EntriesDataTable() {
 
 	return (
 		<>
-			<div className="p-2 bg-gray-200 rounded-3xl">
-				<Table>
-					<TableHeader className="testing">
+			<div className="p-2 bg-gray-200 dark:bg-zinc-800 rounded-3xl">
+				<Table className="">
+					<TableHeader className="">
 						{table.getHeaderGroups().map((headerGroup) => (
-							<TableRow key={headerGroup.id} className="">
+							<TableRow key={headerGroup.id} className="overflow-hidden">
 								{headerGroup.headers.map((header) => (
 									<TableHead
 										key={header.id}
-										className="text-center text-xl font-bold rounded-2xl bg-gray-300"
+										className="text-center text-xl font-bold rounded-2xl bg-gray-300 dark:bg-zinc-600 overflow-hidden"
 									>
 										{header.isPlaceholder
 											? null
@@ -204,7 +204,7 @@ export function EntriesDataTable() {
 							</TableRow>
 						))}
 					</TableHeader>
-					<TableBody className="last:border-2">
+					<TableBody className="border-0 last:border-b-2 first:mt-4">
 						{table.getRowModel().rows.map((row) => (
 							<TableRow key={row.id}>
 								{row.getVisibleCells().map((cell) => (

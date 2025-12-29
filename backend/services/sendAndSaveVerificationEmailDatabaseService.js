@@ -1,8 +1,10 @@
 import transporter from '../config/mailTransporter.js';
 import { getRandomOTP } from '../utils/index.js';
 import pool from "../config/db.js";
+import { formatDistance, formatDate } from "date-fns";
+import { TZDate } from "@date-fns/tz";
 
-// console.log("Message sent: %s", info.messageId);
+
 export async function sendVerificationEmail(userId) {
 	const conn = await pool.getConnection();
 
@@ -16,6 +18,8 @@ export async function sendVerificationEmail(userId) {
 
 	const currentTimestampISO = currentTimestamp.toISOString().replace('T', ' ').replace('Z', '')
 	const expirationTimestampISO = expirationTimestamp.toISOString().replace('T', ' ').replace('Z', '')
+	// const currentTimestampISO = currentTimestamp.toISOString()
+	// const expirationTimestampISO = expirationTimestamp.toISOString()
 
 	const request = [userId, currentTimestampISO]
 
@@ -25,15 +29,55 @@ export async function sendVerificationEmail(userId) {
 		let result = emailCheck[0].ExistsCheck.toString();
 
 		if (result == 1) {
-			return false;
-		} else {
+			// return false;
+			const getExistingEmailDetails = await conn.query("SELECT geo_news.verification_emails.OTP_value, geo_news.verification_emails.expiration_date FROM geo_news.verification_emails WHERE user_id = ? AND email_sent = 1 AND ? < expiration_date; ", request);
+
+			const existingEmailDetails = Object.values(getExistingEmailDetails[0])
+
+			const OTPToResend = existingEmailDetails[0]
+			const existingExpirationDateInEmail = existingEmailDetails[1]
+
+			const timeDifferenceForHumans = formatDistance(existingExpirationDateInEmail, currentTimestampISO,
+				{
+					addSuffix: true,
+					includeSeconds: true,
+				}
+			)
+
+			const ConvertExpirationTimestampToLocal = TZDate.tz("Asia/Karachi", existingExpirationDateInEmail.setHours(existingExpirationDateInEmail.getHours() + 5)).toISOString()
+
+			const formattedExpirationTimestamp = formatDate(ConvertExpirationTimestampToLocal, 'PPPPpp').concat(" PKT")
+
+			const verificationMail = await transporter.sendMail({
+				from: '"Admin Sender" <test@example.com>',
+				to: "recipient@example.com",
+				subject: `Verify your Email: User ${userId}`,
+				text: "This is a test email sent via Nodemailer",
+				html: `<pThis is a <b>test verification email</b> sent via Nodemailer!</p><br/><p>Your OTP is <b>${OTPToResend}</b>, and it expires <b>${timeDifferenceForHumans}</b> on ${formattedExpirationTimestamp}</p>`,
+			});
+
+			return true;
+
+		} else if (result == 0) {
+
+			const timeDifferenceForHumans = formatDistance(expirationTimestampISO, currentTimestampISO,
+				{
+					addSuffix: true,
+					includeSeconds: true,
+				}
+			)
+
+			const ConvertExpirationTimestampToLocal = TZDate.tz("Asia/Karachi", expirationTimestamp).toISOString().replace('T', ' ').replace('Z', '')
+
+			const formattedExpirationTimestamp = formatDate(ConvertExpirationTimestampToLocal, 'PPPPpp').concat(" PKT")
+
 			// https://nodemailer.com/usage/testing-with-ethereal
 			const verificationMail = await transporter.sendMail({
 				from: '"Admin Sender" <test@example.com>',
 				to: "recipient@example.com",
 				subject: `Verify your Email: User ${userId}`,
 				text: "This is a test email sent via Nodemailer",
-				html: `<pThis is a <b>test verification email</b> sent via Nodemailer!</p><br/><p>Your OTP is ${userOTP}, and it expires on ${expirationTimestampISO}</p>`,
+				html: `<pThis is a <b>test verification email</b> sent via Nodemailer!</p><br/><p>Your OTP is <b>${userOTP}</b>, and it expires <b>${timeDifferenceForHumans}</b> on ${formattedExpirationTimestamp}</p>`,
 			});
 
 			const verificationEmailRequest = [userId, "1", userOTP, expirationTimestampISO, currentTimestampISO]
@@ -42,6 +86,8 @@ export async function sendVerificationEmail(userId) {
 			await saveToDB;
 
 			return true;
+		} else {
+			return false;
 		}
 
 	} catch (error) {
