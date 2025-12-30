@@ -1,6 +1,6 @@
 import compression from 'compression';
 import express from 'express';
-import bodyParser from 'body-parser';
+// import bodyParser from 'body-parser';
 import cors from 'cors';
 import https from 'https';
 import fs from 'fs';
@@ -15,7 +15,7 @@ const certificate = fs.readFileSync('./security/localhost+2.pem', 'utf8');
 const credentials = { key: privateKey, cert: certificate };
 
 app.use(compression())
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors({
 	origin: "https://localhost:5173",

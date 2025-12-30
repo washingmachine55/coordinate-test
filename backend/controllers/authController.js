@@ -1,4 +1,3 @@
-import pool from '../config/db.js';
 import { sendVerificationEmail, compareValidOTP, userIsVerifiedCheck } from '../services/sendAndSaveVerificationEmailDatabaseService.js';
 import verifyToken from '../middlewares/verifyToken.js';
 import { getUserId, isCredentialsMatching } from '../services/authenticateUserDatabaseService.js';

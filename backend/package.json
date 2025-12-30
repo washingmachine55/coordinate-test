@@ -26,7 +26,8 @@
 		"mariadb": "^3.4.5",
 		"mongodb": "^7.0.0",
 		"mongoose": "^9.0.1",
-		"nodemailer": "^7.0.12"
+		"nodemailer": "^7.0.12",
+		"zod": "^4.2.1"
 	},
 	"devDependencies": {
 		"nodemon": "^3.1.11",

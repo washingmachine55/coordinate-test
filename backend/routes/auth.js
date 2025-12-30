@@ -11,9 +11,10 @@ import {
 const router = express.Router();
 
 import verifyToken from '../middlewares/verifyToken.js';
+import { verifyInputFields } from '../middlewares/verifyInputFields.js';
 
 // router.get('/register', cors(), registerUser)
-router.post('/register', registerUser)
+router.post('/register', verifyInputFields, registerUser)
 router.post('/login', loginUser)
 router.get('/logout', logoutUser)
 router.get('/verify-token', verifyToken, verifyUserToken)
