@@ -12,9 +12,9 @@ import { toast } from 'sonner';
 import { Spinner } from '@/components/ui/spinner';
 import { useNavigate } from 'react-router';
 import { axiosInstance } from '@/lib/axios-headers';
-import AuthLayout from '@/components/layouts/auth-layout';
+import App from '@/App';
 
-export function VerifyEmailByOTP() {
+export function VerifyOTP() {
 	const [value, setValue] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
 	const navigate = useNavigate();
@@ -64,12 +64,9 @@ export function VerifyEmailByOTP() {
 	};
 
 	return (
-		<AuthLayout
-			title="Verify email"
-			description="Please verify your email address by entering the OTP we just emailed to you."
-		>
-			<div className="flex flex-row justify-center mt-8">
-				<div className="flex flex-col items-center space-y-4 fixed justify-self-center my-auto h-[5vh] place-content-center">
+		<App>
+			<div className="flex flex-row justify-center">
+				<div className="flex flex-col items-center space-y-4 fixed justify-self-center my-auto h-[75vh] place-content-center">
 					<div className="flex flex-row space-x-2 items-center">
 						<InputOTP
 							maxLength={6}
@@ -120,6 +117,6 @@ export function VerifyEmailByOTP() {
 					</div>
 				</div>
 			</div>
-		</AuthLayout>
+		</App>
 	);
 }

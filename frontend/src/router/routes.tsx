@@ -7,6 +7,11 @@ import { VerifyEmailByOTP } from '@/pages/auth/verify-email-by-OTP';
 import EntriesMain from '@/pages/entries/entries-main.tsx';
 import { Route, Routes } from 'react-router';
 import Home from '@/pages/home';
+import ResetPassword from '@/pages/auth/reset-password';
+import ForgotPassword from '@/pages/auth/forgot-password';
+import VerifyEmail from '@/pages/auth/verify-email';
+import { VerifyOTP } from '@/pages/auth/verify-OTP';
+import AuthLayout from '@/components/layouts/auth-layout';
 // import { useContext } from 'react';
 
 // export const router = createBrowserRouter([
@@ -68,12 +73,15 @@ function RoutesMain() {
 			<Route>
 				<Route path="/" Component={Home} />
 				<Route path="/entries" Component={EntriesMain} />
-				<Route path="/verify/otp" Component={VerifyEmailByOTP} />
 			</Route>
 			<Route>
 				<Route path="/auth/guest" element={<Guest />} />
 				<Route path="/auth/register" element={<Register />} />
 				<Route path="/auth/login" element={<Login canRegister />} />
+				<Route path="/auth/reset-password" element={<ResetPassword />} />
+				<Route path="/auth/forgot-password" element={<ForgotPassword />} />
+				<Route path="/auth/verify-email-otp" element={<VerifyEmailByOTP />} />
+				<Route path="/auth/verify-otp" element={<VerifyOTP />} />
 			</Route>
 			<Route>
 				<Route path="*" element={<Error404 />} />

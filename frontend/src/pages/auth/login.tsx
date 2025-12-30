@@ -67,7 +67,7 @@ export default function Login({ status, canRegister }: LoginProps) {
 					<div className="grid gap-2">
 						<div className="flex items-center">
 							<Label htmlFor="password">Password</Label>
-							<TextLink className="ml-auto text-sm" tabIndex={5}>
+							<TextLink className="ml-auto text-sm" href="/auth/forgot-password" tabIndex={5}>
 								Forgot password?
 							</TextLink>
 						</div>
