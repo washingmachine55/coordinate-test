@@ -6,7 +6,7 @@ TYPE=$(gum choose "All Office Apps" "Work Apps");
 if [[ $TYPE == 'Work Apps' ]]; then
   exec alacritty --working-directory ./backend/ --hold -e bash -c "npm run secure-dev-debug & exec bash;" &
   exec alacritty --working-directory ./frontend/ -e bash -c "npm run dev" &
-  exec alacritty --daemon -e "mailpit" &
+  exec mailpit &
   exec bash -c "code ." &
   exec bash -c "insomnia &" &
   exec bash -c "dbeaver &" &

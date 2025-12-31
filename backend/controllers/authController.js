@@ -1,12 +1,16 @@
 import { sendVerificationEmail, compareValidOTP, userIsVerifiedCheck } from '../services/sendAndSaveVerificationEmailDatabaseService.js';
 import verifyToken from '../middlewares/verifyToken.js';
 import { getUserId, isCredentialsMatching } from '../services/authenticateUserDatabaseService.js';
-import checkExistingEmail from '../services/checkExistingEmailDatabaseService.js';
+import { checkExistingEmail, getUserIdFromExistingEmail } from '../services/checkExistingEmailDatabaseService.js';
 import registerUserToDatabase from '../services/registerDatabaseService.js';
 import { confirmPassword } from '../utils/index.js';
 
 import jwt from 'jsonwebtoken';
 import verifyUserAccessFromDatabase from '../services/verifyUserAccessDatabaseService.js';
+import { formatDate, formatDistance } from 'date-fns';
+import { TZDate } from '@date-fns/tz';
+import transporter from '../config/mailTransporter.js';
+import bcrypt from 'bcryptjs';
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 async function registerUser(req, res) {
@@ -31,7 +35,7 @@ async function registerUser(req, res) {
 		// --------------------------------------------------------------------------- //
 	let existingEmailCheck = await checkExistingEmail(userEmail);
 
-	if (existingEmailCheck == false) {
+		if (existingEmailCheck == true) {
 		return await res.format({
 			json() {
 				res.send({
@@ -97,7 +101,7 @@ async function loginUser(req, res) {
 		// --------------------------------------------------------------------------- //
 		let existingEmailCheck = await checkExistingEmail(userEmail);
 
-		if (existingEmailCheck == true) {
+		if (existingEmailCheck == false) {
 			return await res.format({
 				json() {
 					res.send([
@@ -109,7 +113,7 @@ async function loginUser(req, res) {
 					]);
 				},
 			});
-		} else if (existingEmailCheck == false) {
+		} else if (existingEmailCheck == true) {
 			// --------------------------------------------------------------------------- //
 			// Email and Password Combination Check
 			// --------------------------------------------------------------------------- //
@@ -339,4 +343,69 @@ async function verifyUserAccess(req, res) {
 
 }
 
-export { registerUser, loginUser, logoutUser, verifyUserToken, resendOTP, verifyOTP, verifyUserAccess };
+async function forgotPassword(req, res) {
+	const emailToCheck = Object.values(req.body).toString();
+
+	try {
+		const existingEmailCheck = await checkExistingEmail(emailToCheck)
+		if (existingEmailCheck == false) {
+			return await res.format({
+				json() {
+					res.send([
+						{
+							type: 'error',
+							message: "Email doesn't exist. Please sign up instead.",
+						},
+					]);
+				},
+			});
+		} else {
+			const currentTimestamp = new Date();
+			let expirationTimestamp = new Date();
+			const expiration_time = Number(process.env.OTP_EXPIRATION_TIME)
+			expirationTimestamp = new Date(expirationTimestamp.setMinutes(expirationTimestamp.getMinutes() + expiration_time))
+			const currentTimestampISO = currentTimestamp.toISOString().replace('T', ' ').replace('Z', '')
+			const expirationTimestampISO = expirationTimestamp.toISOString().replace('T', ' ').replace('Z', '')
+			const timeDifferenceForHumans = formatDistance(expirationTimestampISO, currentTimestampISO,
+				{
+					addSuffix: true,
+					includeSeconds: true,
+				}
+			)
+			const ConvertExpirationTimestampToLocal = TZDate.tz("Asia/Karachi", expirationTimestamp.setHours(expirationTimestamp.getHours() + 5)).toISOString()
+
+			const formattedExpirationTimestamp = formatDate(ConvertExpirationTimestampToLocal, 'PPPPpp').concat(" PKT")
+			const userID = await getUserIdFromExistingEmail(emailToCheck);
+
+			const token = jwt.sign({ id: userID }, JWT_SECRET_KEY, { expiresIn: '1h' });
+
+			const encryptedToken = await bcrypt.hash(token, 10);
+			console.log((encryptedToken).toString());
+
+			const passwordResetLink = 'https://localhost:5173/reset?' + encryptedToken;
+			const verificationMail = await transporter.sendMail({
+				from: '"Admin Sender" <test@example.com>',
+				to: emailToCheck,
+				subject: `Verify your Email: User ${userID}`,
+				text: "This is a test email sent via Nodemailer",
+				html: `<pThis is a <b>test verification email</b> sent via Nodemailer!</p><br/><p>Please click on the following link to reset your password:<br/><a href='${passwordResetLink}'>${passwordResetLink}</a></p><br/>The link expires <b>${timeDifferenceForHumans}</b> on ${formattedExpirationTimestamp}</p>`,
+			});
+
+			return await res.format({
+				json() {
+					res.send([
+						{
+							type: 'success',
+							message: "Password reset link has been shared to your email address. Please continue from there.",
+						},
+					]);
+				},
+			});
+		}
+
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+export { registerUser, loginUser, logoutUser, verifyUserToken, resendOTP, verifyOTP, verifyUserAccess, forgotPassword };

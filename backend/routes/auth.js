@@ -6,7 +6,8 @@ import {
 	verifyUserToken,
 	resendOTP,
 	verifyOTP,
-	verifyUserAccess
+	verifyUserAccess,
+	forgotPassword
 } from '../controllers/authController.js';
 const router = express.Router();
 
@@ -21,5 +22,6 @@ router.get('/verify-token', verifyToken, verifyUserToken)
 router.get('/resend-otp', verifyToken, resendOTP)
 router.post('/verify-otp', verifyToken, verifyOTP)
 router.get('/verify-access', verifyToken, verifyUserAccess)
+router.post('/forgot-password', forgotPassword)
 
 export default router;
